@@ -6,29 +6,53 @@ for (var i in splitUrlKeyValue) {
     thisClass[temp[0]] = temp[1]
 }
 
+var db = null;
+
 
 $(document).ready(function () {
-    $('#div_className').text(decodeURIComponent(thisClass.className))
 
-    var classTextbook = JSON.parse(localStorage.getItem('classTextbook'))
-    if (classTextbook == null) {
-        swal.fire('請更新資料')
-    } else {
-        var filterClassTextbook = classTextbook.filter(function(item, index, array){
-            return item.ClassId == thisClass.classId
-        })
-        var filterTextbook = JSON.parse(localStorage.getItem('textbook')).filter(function(item,index,array){
-            for(let i in filterClassTextbook){
-                if(filterClassTextbook[i].TextbookId == item.TextbookId){
-                    return item
+    document.addEventListener('deviceready', function () {
+        if(cordova.platformId==="browser"){
+            db= openDatabase('word', '1.0', 'wordDB', 50*1024*1024);
+        }else{
+            db = window.sqlitePlugin.openDatabase({
+                name: 'word',
+                location: 'default',
+            });
+        }
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT count(*) AS mycount FROM worddef', [], function (tx, rs) {
+                alert('Record count (expected to be 2): ' + rs.rows.item(0).mycount);
+            }, function (tx, error) {
+                alert('SELECT error: ' + error.message);
+            });
+        });
+
+
+        $('#div_className').text(decodeURIComponent(thisClass.className))
+
+        var classTextbook = JSON.parse(localStorage.getItem('classTextbook'))
+        if (classTextbook == null) {
+            swal.fire('請更新資料')
+        } else {
+            var filterClassTextbook = classTextbook.filter(function (item, index, array) {
+                return item.ClassId == thisClass.classId
+            })
+            var filterTextbook = JSON.parse(localStorage.getItem('textbook')).filter(function (item, index, array) {
+                for (let i in filterClassTextbook) {
+                    if (filterClassTextbook[i].TextbookId == item.TextbookId) {
+                        return item
+                    }
                 }
-            }
-        })
+            })
 
-        showDivChapterList(filterTextbook)
+            showDivChapterList(filterTextbook)
 
 
-    }
+        }
+
+
+    })
 })
 
 
