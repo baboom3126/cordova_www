@@ -9,7 +9,14 @@ var db = null
 var filterDeck;
 var wordListArray = []
 
+let isFront = true
+
 $(document).ready(function () {
+
+    $('#front_div-deck-card_align-middle').click(function(){
+        console.log('front clicked')
+        isFront = false
+    })
 
     document.addEventListener('deviceready', function () {
 
@@ -99,6 +106,14 @@ var showWordList = function (data) {
 }
 
 var show_word = async function (wordId) {
+
+    if(isFront===false){
+        $('#flip-container').click()
+        isFront = true
+    }
+
+    $('#div_opacity').css('display','')
+
     $('body').css('overflow-y', 'hidden')
 
     let queryWord = (wid) => new Promise((resolve,reject)=>{
@@ -150,10 +165,10 @@ var show_word = async function (wordId) {
     let appendHtmlForWordBlocks = ``
 
     let queryWordDefResult = await queryWordDef(wordId)
-
+    let thisWordSpeechSet = new Set()
     for(let i =0;i<queryWordDefResult.length;i++){
-    // for(let wordDef of queryWordDefResult){
-
+        thisWordSpeechSet.add(queryWordDefResult.item(i).Speech)
+        console.log(queryWordDefResult.item(i).Speech)
         let queryWordSenResult = await queryWordSen(queryWordDefResult.item(i).WordDefId)
         console.log(queryWordDefResult.item(i).WordDefId)
         appendHtmlForWordBlocks += `<div class="back_card_word_block">`
@@ -165,7 +180,6 @@ var show_word = async function (wordId) {
                                     <div style="color: #707070;font-weight: 600;">例句</div>`
         let counter = 1
         for(let j = 0;j<queryWordSenResult.length;j++){
-        // for(let wordSen of queryWordSenResult){
             console.log(queryWordSenResult)
             if (queryWordSenResult.item(j).EngSentence || queryWordSenResult.item(j).ChiSentence) {
                 appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${queryWordSenResult.item(j).EngSentence}</div>
@@ -181,40 +195,49 @@ var show_word = async function (wordId) {
     appendHtmlForWordBlocks = appendHtmlForWordBlocks.replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')
 
     let device_height = document.documentElement.clientHeight
-    $('body').append(`<div id="div_opacity">
-                            <div class="div_opacity"  onclick="javascript:close_word(this)"></div>
-                            <div class="div_previous_word waves-effect" onclick="javascript:show_previous_word('${wordId}')"><img src="./img/btn/buttonBACK@3x.png" height="41" width="41"></div>
-                            <div class="div_next_word waves-effect" onclick="javscript:show_next_word('${wordId}')"><img src="./img/btn/buttonNEXT@3x.png" height="41" width="41"></div>
+    $('#div_previous_word').attr('onclick',`javascript:show_previous_word('${wordId}')`)
+    $('#div_next_word').attr('onclick',`javascript:show_next_word('${wordId}')`)
+    $('#flip-container').css('top',`${device_height * 0.15}px`)
+    $('#front_div-deck-card_align-middle').css('height',`${device_height * 0.7}px`)
+    $('#span_front_theWord').text(word_theWord)
+    $('#div_front_speech').text(Array.from(thisWordSpeechSet).join(', '))
+    $('#div_back_card_info_inner').html(appendHtmlForWordInfo+appendHtmlForWordBlocks)
 
-                            <div class="flip-container" onclick="this.classList.toggle('hover');" style="top:${device_height * 0.15}px">
-                                    <div class="flipper">
-                                        <div class="front div-deck-card align-middle" style="height:${device_height * 0.7}px;">
-                                            <div style="top:42%;position:relative;text-align: center;color: #7193C4;font-size: 26px;font-weight: 600 ;">
-                                                ${word_theWord}<br>
-                                                <div style="font-size: 14px;font-weight: normal;color: #E25A53;">123</div>
-                                            </div>
-
-                                        </div>
-                                        <div class="back div-deck-card" style="height:${device_height * 0.7}px;">
-                                            <div class="row">
-                                                <div class="back_card_info">
-
-                                                    ${appendHtmlForWordInfo}
-                                                    ${appendHtmlForWordBlocks}
-
-                                                    <div style="color: #707070;font-weight: 600;padding-bottom: 5px;">單字備註</div>
-                                                    <div class="" style="color: #707070;min-height: 98px;border:1px solid #A4C1ED;border-radius: 10px;padding-top:5px;padding-left: 8px;padding-right: 8px;">${word_remarks}</div>
-                                                    <br><br><br>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                      </div>
-
-    `)
+    $('#div_back_word_remarks').text(word_remarks)
+    // $('body').append(`<div id="div_opacity">
+    //                         <div class="div_opacity"  onclick="javascript:close_word(this)"></div>
+    //                         <div class="div_previous_word waves-effect" onclick="javascript:show_previous_word('${wordId}')"><img src="./img/btn/buttonBACK@3x.png" height="41" width="41"></div>
+    //                         <div class="div_next_word waves-effect" onclick="javscript:show_next_word('${wordId}')"><img src="./img/btn/buttonNEXT@3x.png" height="41" width="41"></div>
+    //
+    //                         <div class="flip-container" onclick="this.classList.toggle('hover');" style="top:${device_height * 0.15}px">
+    //                                 <div class="flipper">
+    //                                     <div class="front div-deck-card align-middle" style="height:${device_height * 0.7}px;">
+    //                                         <div style="top:42%;position:relative;text-align: center;color: #7193C4;font-size: 26px;font-weight: 600 ;">
+    //                                             ${word_theWord}<br>
+    //                                             <div style="font-size: 14px;font-weight: normal;color: #E25A53;">123</div>
+    //                                         </div>
+    //
+    //                                     </div>
+    //                                     <div class="back div-deck-card" style="height:${device_height * 0.7}px;">
+    //                                         <div class="row">
+    //                                             <div class="back_card_info">
+    //
+    //                                                 ${appendHtmlForWordInfo}
+    //                                                 ${appendHtmlForWordBlocks}
+    //
+    //                                                 <div style="color: #707070;font-weight: 600;padding-bottom: 5px;">單字備註</div>
+    //                                                 <div class="" style="color: #707070;min-height: 98px;border:1px solid #A4C1ED;border-radius: 10px;padding-top:5px;padding-left: 8px;padding-right: 8px;">${word_remarks}</div>
+    //                                                 <br><br><br>
+    //                                             </div>
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div>
+    //
+    //                   </div>
+    //
+    // `)
 
 ////
 //     var wordInfo = JSON.parse(localStorage.getItem('word')).filter(function (item, index, array) {
@@ -273,7 +296,7 @@ var show_word = async function (wordId) {
 }
 
 var close_word = function (that) {
-    console.log($(that).parent().remove())
+    $('#div_opacity').css('display','none')
     $('body').css('overflow-y', '')
 
 }
@@ -284,7 +307,6 @@ var show_previous_word = function (word) {
     })
 
     if (wordIndex > 0) {
-        $('#div_opacity').remove()
         show_word(wordListArray[wordIndex - 1])
     } else {
         alert('前面沒有單字了')
@@ -297,7 +319,6 @@ var show_next_word = function (word) {
     })
 
     if (wordIndex < wordListArray.length - 1) {
-        $('#div_opacity').remove()
         show_word(wordListArray[wordIndex + 1])
     } else {
         alert('後面沒有單字了')
