@@ -120,7 +120,7 @@ var downloadAllData = function () {
 
                 for (let word of response.data["word"]) {
                     tx.executeSql('INSERT INTO word (WordId, TheWord,Status,Remarks,AudioPath) VALUES (?,?,?,?,?)',
-                        [word.WordId, word.TheWord,word.Status,word.Remarks,word.AudioPath]);
+                        [word.WordId, word.TheWord,word.Status,word.Remarks,decodeURIComponent(word.AudioPath)]);
 
                 }
                 for (let worddef of response.data["worddef"]) {

@@ -6,27 +6,10 @@ for (var i in splitUrlKeyValue) {
     thisClass[temp[0]] = temp[1]
 }
 
-var db = null;
 
 
 $(document).ready(function () {
 
-    document.addEventListener('deviceready', function () {
-        if(cordova.platformId==="browser"){
-            db= openDatabase('word', '1.0', 'wordDB', 50*1024*1024);
-        }else{
-            db = window.sqlitePlugin.openDatabase({
-                name: 'word',
-                location: 'default',
-            });
-        }
-        db.transaction(function (tx) {
-            tx.executeSql('SELECT count(*) AS mycount FROM worddef', [], function (tx, rs) {
-                alert('Record count (expected to be 2): ' + rs.rows.item(0).mycount);
-            }, function (tx, error) {
-                alert('SELECT error: ' + error.message);
-            });
-        });
 
 
         $('#div_className').text(decodeURIComponent(thisClass.className))
@@ -52,7 +35,6 @@ $(document).ready(function () {
         }
 
 
-    })
 })
 
 
