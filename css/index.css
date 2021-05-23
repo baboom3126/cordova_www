@@ -1,0 +1,48 @@
+.class_list_left{
+    padding-top: 9px;
+    padding-bottom: 9px;
+    width: 50px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600 ;
+    color:white;
+    background-color: #7AA2BD;
+}
+
+.class_list_right{
+    padding-left: 10px;
+}
+
+.list_of_class_name{
+    color: #5F89C7;
+    font-weight: 600 ;
+    font-size: 20px;
+
+}
+
+.list_of_class_des{
+    color: #707070;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+
+.color_0{
+    background-color: #7AA2BD;
+}
+.color_1{
+    background-color: #93B8B0;
+}
+.color_2{
+    background-color: #B4CACA;
+}
+.color_3{
+    background-color: #CAC1B4;
+}
+.color_4{
+    background-color: #DACBAA;
+}
+.color_5{
+    background-color: #CEA590;
+}

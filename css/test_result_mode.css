@@ -1,0 +1,36 @@
+
+.div_word_row {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    padding-left: 30px;
+    background-color: #F1F9FF;
+    color: #5F89C7;
+    font-size: 20px;
+    border-radius: 11px;
+    /*font-weight: 250;*/
+}
+
+.div_tabs{
+
+}
+
+.tabs-content{
+    height: 550px;
+}
+
+.a_in_li_tab{
+    color:#5F89C7!important;
+    font-size: 14px;
+    font-weight: 600 ;
+}
+
+.tabs .indicator{
+    background-color:#5F89C7;
+}
+
+
+.tabs .tab a:focus{
+    background-color:rgba(127, 168, 230,0.1)!important;/* put some background color*/;
+    color:#5F89C7/* put some font color*/;
+}
+/*when active*/

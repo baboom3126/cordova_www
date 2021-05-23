@@ -1,0 +1,75 @@
+.title_arrow{
+
+    padding-top: 5px;
+}
+select{
+    text-overflow: ellipsis;
+    padding-left: 10px;
+
+    font-size: 16px;
+    height: 48px;
+}
+
+
+
+.div_test_select{
+
+}
+.row{
+    margin-bottom: 0px;
+}
+.collapsible{
+    border:0px;
+    border-radius: 10px;
+    background-color: #F1F9FF;
+}
+.collapsible-body{
+    display: block;
+    background-color: white;
+    padding:0px;
+    border-bottom: 0;
+}
+.collapsible-header{
+    word-break: break-word;
+    border-radius: 10px;
+    font: normal normal normal 18px/25px PingFang TC;
+    color: #5F89C7;
+
+    border:0px;
+    background-color: #F1F9FF;
+
+}
+span{
+    color: #5F89C7;
+}
+[type="checkbox"]+span:not(.lever){
+    font-size: 18px;
+}
+[type="checkbox"].filled-in:not(:checked)+span:not(.lever):after{
+    border-color: #5F89C7;
+}
+[type="checkbox"].filled-in:checked+span:not(.lever):after{
+    border-color: #5F89C7;
+    background-color: #5F89C7;
+}
+
+
+
+.arrow_chapter_header{
+    font-size: x-large;
+    position: absolute;
+    right:35px;
+}
+
+.div_checkbox_chapter{
+    border: 1px solid #E1F2FF;
+
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 14px;
+}
+.span_for_chapter{
+    font-size: 12px!important;
+    padding-right: 5px;
+}
+

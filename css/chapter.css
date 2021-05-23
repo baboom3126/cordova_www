@@ -1,0 +1,118 @@
+.div_word_row {
+    padding-top: 23px;
+    padding-bottom: 23px;
+    padding-left: 30px;
+    background-color: #F1F9FF;
+    color: #5F89C7;
+    font-size: 20px;
+    border-radius: 11px;
+    /*font-weight: 500;*/
+}
+
+.div_word_element_right {
+    position: relative;
+    padding-right: 30px;
+
+    color: #5F89C7;
+    font-size: 20px;
+    right: 25px;
+}
+
+.row {
+    margin-bottom: 5px;
+}
+
+.card_front {
+    background-color: white;
+    margin: auto;
+    min-height: 480px;
+    padding-top: 200px;
+    padding-bottom: 250px;
+    text-align: center;
+    border-radius: 15px;
+    color: #5F89C7;
+    box-shadow: 0px 30px 30px #0000001A;
+    horiz-align: center;
+    font-size: 26px;
+}
+
+.card_back {
+    margin: auto;
+    min-height: 480px;
+    border-radius: 15px;
+    color: #5F89C7;
+    box-shadow: 0px 30px 30px #0000001A;
+    horiz-align: center;
+    font-size: 26px;
+}
+
+.back_card_info {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.back_card_word_title {
+    color: #7193C4;
+    font-weight: 600;
+    /*padding-left: 14px;*/
+    padding-right: 25px;
+    padding-top: 17px;
+    padding-bottom: 8px;
+    font-size: 26px;
+    border-bottom: 1px solid #E1F2FF;
+    margin-bottom: 10px;
+}
+
+
+.back_card_word_speech {
+    display: inline-block;
+    color: #E25A53;
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+.back_card_word_block {
+    color: #707070;
+    border-bottom: 1px solid #E1F2FF;
+    margin-bottom: 10px;
+}
+
+.back_card_word_sen {
+    color: #707070;
+
+}
+
+
+.back_card_word_sen_eng {
+    color: #5F89C7;
+}
+
+.back_card_word_def_chi {
+    color: #707070;
+
+}
+
+.div_previous_word {
+    position: absolute;
+    z-index: 20;
+    top: 47%;
+    left: 2%;
+}
+
+.div_next_word {
+    position: absolute;
+    z-index: 20;
+    top: 47%;
+    right: 2%;
+}
+
+.word_highlight {
+    font-weight: 500;
+    color: #E25A53;
+}
+
+#div_chapterName{
+    font-weight: 600;
+    color: #5F89C7;
+
+}

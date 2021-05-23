@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+
+    <!-- <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover"> -->
+    <meta name="color-scheme" content="light dark">
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="./css/materialize.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/login.css">
+
+    <script src="./js/materialize.min.js"></script>
+    <script src="./js/jquery-3.5.1.min.js"></script>
+
+
+    <title>派式英語</title>
+</head>
+
+<body>
+
+
+<div class="nav_safe_area">
+    <nav class="main_color no_shadow">
+        <div class="nav-wrapper">
+            <a class="sidenav-left" href="./login.html" style="margin-left: 10px;" >
+                <img src="./img/main/iconBACK@3x.png" style="padding-left: 10px;" height="15">
+            </a>
+            <a href="./login.html" class="brand-logo"><img src="./img/main/logo@2x.png" height="23"></a>
+        </div>
+    </nav>
+</div>
+<div class="row" style="height: 12%;"></div>
+<div class="container" style="height: 48%">
+
+    <div class="row underline">
+        <div class="col s1"><img src="./img/main/iconPROFILE@3x.png" width="16" style="margin-top: 14px;"/> </div>
+        <div class="col s11"><input type="text" id="user_name" placeholder="輸入姓名"/> </div>
+
+    </div>
+
+
+    <div class="row underline">
+        <div class="col s1"><img src="./img/main/iconMAIL@3x.png" width="16" style="margin-top: 14px;"/> </div>
+        <div class="col s11"><input type="email"  id="user_account" placeholder="請輸入帳號（信箱）"/> </div>
+
+    </div>
+
+    <div class="row underline">
+        <div class="col s1"><img src="./img/main/iconFORWARD@3x.png" width="16" style="margin-top: 14px;"/> </div>
+        <div class="col s11"><input type="password" id="user_password" placeholder="請輸入密碼"/> </div>
+
+    </div>
+
+    <div class="row underline">
+        <div class="col s1"><img src="./img/main/iconMAIL@3x.png" width="16" style="margin-top: 14px;"/> </div>
+        <div class="col s11"><input type="password" id="user_password_confirm" placeholder="確認密碼"/> </div>
+
+    </div>
+</div>
+
+<div class="row" style="height:18%;">
+    <div class="col s12" style="padding-left: 5%;padding-right:5%;margin-top: 0%;">
+            <button class="btn no_shadow waves-effect"
+                    style="width: 100%;height: 45px; background-color:  #5F89C7!important;color:white;" onclick="javascript:register_account()">註冊
+            </button>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="js/vendor/sweetalert.js"></script>
+<script src="js/main.js"></script>
+<script src="js/register.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+.collapsible{
+    border:0px;
+    border-radius: 10px;
+    background-color: #F1F9FF;
+}
+.collapsible-body{
+    background-color: white;
+    padding:0px;
+    border-bottom: 0;
+}
+.collapsible-header{
+    word-break: break-word;
+    border-radius: 10px;
+    font: normal normal normal 18px/25px PingFang TC;
+    color: #5F89C7;
+    margin-bottom: 0;
+    border:0px;
+    background-color: #F1F9FF;
+
+}
+
+.a_for_chapter{
+
+    border: 1px solid #E1F2FF;
+    width: 100%;
+    background-color: white;
+    font-size: small;
+    text-align: left;
+    display: block;
+    line-height: normal;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: #5F89C7;
+
+}
+
+.arrow_chapter_header{
+    font-size: x-large;
+    position: absolute;
+    right:35px;
+}
+
+.li_right{
+    font-weight: 600 ;
+    padding-left: 20px;
+}
+.li_left{
+    font-weight: 900;
+}
