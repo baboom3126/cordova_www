@@ -28,7 +28,53 @@ let randomArray = function (arr) {
     return arr
 }
 
-let getWordInfo = function (wordId) {
+let getWordInfo = async function (wordId) {
+
+    let queryWordInfo = (wid) => new Promise((resolve,reject)=>{
+        db.transaction(async function (tx) {
+
+            let queryWord = (wid,transaction) => new Promise((resolve,reject)=>{
+                transaction.executeSql('SELECT * FROM word WHERE WordId = ?', [wid], function (tx, rs) {
+
+                    resolve(rs)
+                }, function (tx, error) {
+                    reject(error)
+                });
+            })
+
+            let queryWordDef = (wid,transaction) => new Promise((resolve,reject)=>{
+                transaction.executeSql('SELECT WordDefId,ChiDefinition,Speech FROM worddef WHERE WordId = ? ORDER BY Myorder', [wid], function (tx, rs) {
+
+                    resolve(rs)
+                }, function (tx, error) {
+                    reject(error)
+                });
+            })
+
+            let queryWordSen = (wdefid,transaction) => new Promise((resolve,reject)=>{
+                transaction.executeSql('SELECT ChiSentence,EngSentence FROM wordsen WHERE WordDefId = ? ORDER BY Myorder', [wdefid], function (tx, rs) {
+
+                    resolve(rs)
+                }, function (tx, error) {
+                    reject(error)
+                });
+            })
+
+
+            let queryWordResult = await queryWord(wid,tx)
+            let queryWordDefResult = await queryWordDef(wid,tx)
+            resolve({queryWordResult:queryWordResult,queryWordDefResult:queryWordDefResult})
+
+
+        }, function (error) {
+            reject(error)
+            console.log('資料庫錯誤: ' + error.message);
+        }, function () {
+            console.log('Query database OK');
+
+        });
+    })
+
 
     var wordInfo = JSON.parse(localStorage.getItem('word')).filter(function (item, index, array) {
         return item.WordId == wordId

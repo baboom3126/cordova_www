@@ -60,7 +60,7 @@ var showWordList = function (data) {
 
         for (let i of data) {
             tx.executeSql('SELECT TheWord FROM word WHERE WordId = ?', [i.WordId], function (tx, rs) {
-                console.log(rs)
+
                 let appendHtml = `    <div class="row div_word_row" onclick="javascript:show_word('${i.WordId}')">
                             <div class="col s10">
                                 <div class="">
@@ -87,7 +87,7 @@ var showWordList = function (data) {
     }, function (error) {
         console.log('Transaction ERROR: ' + error.message);
     }, function () {
-        console.log('Populated database OK');
+        console.log('Query database OK');
 
     });
 
@@ -124,6 +124,11 @@ var show_word = async function (wordId) {
                 reject(error)
                 swal.fire('資料庫錯誤: ' + error.message);
             });
+        }, function (error) {
+            console.log('Transaction ERROR: ' + error.message);
+        }, function () {
+            console.log('Query database OK');
+
         });
     })
     let queryWordDef = (wid) => new Promise((resolve,reject)=>{
@@ -135,6 +140,11 @@ var show_word = async function (wordId) {
                 reject(error)
                 swal.fire('資料庫錯誤: ' + error.message);
             });
+        }, function (error) {
+            console.log('Transaction ERROR: ' + error.message);
+        }, function () {
+            console.log('Query database OK');
+
         });
     })
 
@@ -146,11 +156,15 @@ var show_word = async function (wordId) {
                 reject(error)
                 swal.fire('資料庫錯誤: ' + error.message);
             });
+        }, function (error) {
+            console.log('Transaction ERROR: ' + error.message);
+        }, function () {
+            console.log('Query database OK');
+
         });
     })
 
     let queryWordResult = await queryWord(wordId)
-    console.log(queryWordResult)
     let word_theWord = queryWordResult.TheWord
     let word_audioPath = queryWordResult.AudioPath
     let word_remarks = queryWordResult.Remarks
@@ -168,9 +182,7 @@ var show_word = async function (wordId) {
     let thisWordSpeechSet = new Set()
     for(let i =0;i<queryWordDefResult.length;i++){
         thisWordSpeechSet.add(queryWordDefResult.item(i).Speech)
-        console.log(queryWordDefResult.item(i).Speech)
         let queryWordSenResult = await queryWordSen(queryWordDefResult.item(i).WordDefId)
-        console.log(queryWordDefResult.item(i).WordDefId)
         appendHtmlForWordBlocks += `<div class="back_card_word_block">`
         appendHtmlForWordBlocks += `<div style="color: #707070;font-weight: 600;">解釋</div>
                                     <div>
@@ -180,7 +192,6 @@ var show_word = async function (wordId) {
                                     <div style="color: #707070;font-weight: 600;">例句</div>`
         let counter = 1
         for(let j = 0;j<queryWordSenResult.length;j++){
-            console.log(queryWordSenResult)
             if (queryWordSenResult.item(j).EngSentence || queryWordSenResult.item(j).ChiSentence) {
                 appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${queryWordSenResult.item(j).EngSentence}</div>
                                         <div class="back_card_word_def_chi">${queryWordSenResult.item(j).ChiSentence}</div><br>
