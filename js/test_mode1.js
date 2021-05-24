@@ -3,19 +3,37 @@ let testCount = 0;
 let good = []
 let normal = []
 let bad = []
+
+let db = null
 $(document).ready(function () {
 
+    document.addEventListener('deviceready', async function () {
 
-        nextCard(0)
-        testCount = 1
+        if (cordova.platformId === "browser") {
+            db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+
+            await nextCard(0)
+            testCount = 1
+        } else {
+            db = window.sqlitePlugin.openDatabase({
+                name: 'word',
+                location: 'default',
+            });
+
+
+            await nextCard(0)
+            testCount = 1
+        }
+    })
+
 
 
 })
 
-let answer_click = function (status) {
+let answer_click = async function (status) {
     let id = testWords[testCount-1]
-    let word = getWordInfo(id)[0].TheWord
-
+    let wordInfo = await getWordInfo(id)
+    let word = wordInfo[0].TheWord
     switch(status){
         case "good":
             good.push({id:id,word:word})
@@ -40,7 +58,7 @@ let answer_click = function (status) {
         console.log('done')
     }else{
         currentWord = testWords[testCount]
-        nextCard(testCount)
+        await nextCard(testCount)
     }
 
 
@@ -48,9 +66,9 @@ let answer_click = function (status) {
 }
 
 
-let nextCard = function (index) {
+let nextCard = async function (index) {
 
-    let cardHtml = getCardHtmlForMode1ByWord(testWords[index])
+    let cardHtml = await getCardHtmlForMode1ByWord(testWords[index])
     $('#word_card').html(cardHtml)
     testCount = testCount + 1
     $('#test_progressCounter').text(testCount+'/'+testWords.length)
@@ -58,8 +76,8 @@ let nextCard = function (index) {
 }
 
 
-let getCardHtmlForMode1ByWord = function (wordId) {
-    let wordInfo = getWordInfo(wordId)
+let getCardHtmlForMode1ByWord = async function (wordId) {
+    let wordInfo = await getWordInfo(wordId)
     let word = wordInfo[0].TheWord
 
     let appendDetailHtml = ``
@@ -73,7 +91,9 @@ let getCardHtmlForMode1ByWord = function (wordId) {
         appendDetailHtml += `</div>`
     }
 
-    appendDetailHtml = appendDetailHtml.replaceAll(word,'<span class="word_highlight">'+word+'</span>')
+    let regex = new RegExp(word, "g");
+
+    appendDetailHtml = appendDetailHtml.replace(regex,'<span class="word_highlight">'+word+'</span>')
 
 
     let cardHtml = `

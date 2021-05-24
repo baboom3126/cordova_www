@@ -3,159 +3,178 @@ let testWords = randomArray(getTestWordsByChapterInLocalStorage())
 let testCount = 0;
 let correct = []
 let wrong = []
+
+let db = null;
 $(document).ready(function () {
+    document.addEventListener('deviceready', async function () {
 
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://www.paishienglish.com/app/login",
-        "method": "POST",
-        "headers": {
-            "content-type": "application/json",
-            "cache-control": "no-cache",
-        }
-    }
 
-    $.ajax(settings).done(function (response,status) {
-        console.log(status)
-    }).fail(function (response,status){
-        console.log(status)
-        if(status=="error"){
-            $('#btn_start').text('返回首頁')
-            $('#btn_start').attr('onclick','javascript:location.href="./index.html"')
-            alert('此測驗需網路連線')
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://www.paishienglish.com/app/login",
+            "method": "POST",
+            "headers": {
+                "content-type": "application/json",
+                "cache-control": "no-cache",
+            }
         }
 
-    })
+        $.ajax(settings).done(function (response, status) {
+            console.log(status)
+        }).fail(function (response, status) {
+            console.log(status)
+            if (status == "error") {
+                $('#btn_start').text('返回首頁')
+                $('#btn_start').attr('onclick', 'javascript:location.href="./index.html"')
+                alert('此測驗需網路連線')
+            }
+
+        })
 
 
+        $('#div_row1').css('height', deviceHeight / 10 * 1 + 'px')
+        $('#div_row2').css('height', deviceHeight / 10 * 1 + 'px')
+        $('#div_row3').css('height', deviceHeight / 10 * 5 + 'px')
+        $('#div_row4').css('height', deviceHeight / 10 * 1 + 'px')
+        $('#div_row4_1').css('height', deviceHeight / 10 * 1 + 'px')
 
-    $('#div_row1').css('height', deviceHeight / 10 * 1 + 'px')
-    $('#div_row2').css('height', deviceHeight / 10 * 1 + 'px')
-    $('#div_row3').css('height', deviceHeight / 10 * 5 + 'px')
-    $('#div_row4').css('height', deviceHeight / 10 * 1 + 'px')
-    $('#div_row4_1').css('height', deviceHeight / 10 * 1 + 'px')
-
-    $('#div_row5').css('height', deviceHeight / 10 * 1 + 'px')
-
-
-    $('#div_input').focusin(function () {
-        $('#div_row1').hide()
-        $('#div_row2').hide()
-        $('#div_row5').hide()
-        $('#test_card_for_mode45').css('height', '98%')
-        $('#div_row3').css('height', deviceHeight / 10 * 5 - 20 + 'px')
-
-    })
-
-    $('#div_input').focusout(function () {
-
-        setTimeout(function () {
-            $('.test_card_for_mode45').css('height', '90%')
-            $('#div_row3').css('height', deviceHeight / 10 * 5 + 'px')
-
-            $('#div_row1').show()
-            $('#div_row2').show()
-            $('#div_row5').show()
-        }, 50)
-
-    })
-
-    $('#btn_start').click(function () {
-        $('#btn_start').remove()
-        $('#div_start').remove()
-
-        init_test()
-
-    })
+        $('#div_row5').css('height', deviceHeight / 10 * 1 + 'px')
 
 
+        $('#div_input').focusin(function () {
+            $('#div_row1').hide()
+            $('#div_row2').hide()
+            $('#div_row5').hide()
+            $('#test_card_for_mode45').css('height', '98%')
+            $('#div_row3').css('height', deviceHeight / 10 * 5 - 20 + 'px')
+
+        })
+
+        $('#div_input').focusout(function () {
+
+            setTimeout(function () {
+                $('.test_card_for_mode45').css('height', '90%')
+                $('#div_row3').css('height', deviceHeight / 10 * 5 + 'px')
+
+                $('#div_row1').show()
+                $('#div_row2').show()
+                $('#div_row5').show()
+            }, 50)
+
+        })
+
+        $('#btn_start').click(async function () {
+            $('#btn_start').remove()
+            $('#div_start').remove()
 
 
-    $('#confirm_answer_button').click(function () {
-        let answer = $('#input_test_mode4_answer').val().toLowerCase()
-        if (answer === "") {
+            if (cordova.platformId === "browser") {
+                db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
 
-            M.toast({html: '請輸入答案', displayLength: 1000})
-
-        } else {
-
-            $('#confirm_answer_button').hide()
-            $('#btn_nextWord').show()
-
-            show_wordDetail()
-            $('#span_correct_or_wrong').show()
-
-            if (answer == getWordInfo(testWords[testCount])[0].TheWord.toLowerCase()) {
-
-                let id = testWords[testCount]
-                let word = getWordInfo(id)[0].TheWord
-                correct.push({id:id,word:word})
-                $('#span_correct_or_wrong').css('color','#5F89C7')
-                $('#span_correct_or_wrong').text('答對了')
-
-                // M.toast({html: '正確', displayLength: 1000, classes: 'green'})
-
-
+                await init_test()
 
             } else {
-                let id = testWords[testCount]
-                let word = getWordInfo(id)[0].TheWord
+                db = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
 
-                wrong.push({id:id,word:word})
-                $('#span_correct_or_wrong').css('color','#E25A53')
-                $('#span_correct_or_wrong').text('答錯了')
-
-                // M.toast({html: '錯誤 正確答案為' + testWords[testCount], displayLength: 1000, classes: 'red'})
-
-
+                await init_test()
 
             }
 
 
-        }
+
+
+        })
+
+
+        $('#confirm_answer_button').click(async function () {
+            let answer = $('#input_test_mode4_answer').val().toLowerCase()
+            if (answer === "") {
+
+                M.toast({html: '請輸入答案', displayLength: 1000})
+
+            } else {
+
+                $('#confirm_answer_button').hide()
+                $('#btn_nextWord').show()
+
+                await show_wordDetail()
+                $('#span_correct_or_wrong').show()
+
+                let wordInfo = await getWordInfo(testWords[testCount])
+
+                if (answer == wordInfo[0].TheWord.toLowerCase()) {
+
+                    let id = testWords[testCount]
+                    let word = wordInfo[0].TheWord
+                    correct.push({id: id, word: word})
+                    $('#span_correct_or_wrong').css('color', '#5F89C7')
+                    $('#span_correct_or_wrong').text('答對了')
+
+                    // M.toast({html: '正確', displayLength: 1000, classes: 'green'})
+
+
+                } else {
+                    let id = testWords[testCount]
+                    let word = wordInfo[0].TheWord
+
+                    wrong.push({id: id, word: word})
+                    $('#span_correct_or_wrong').css('color', '#E25A53')
+                    $('#span_correct_or_wrong').text('答錯了')
+
+                    // M.toast({html: '錯誤 正確答案為' + testWords[testCount], displayLength: 1000, classes: 'red'})
+
+
+                }
+
+
+            }
+
+        })
+
+
+        $('#btn_nextWord').click(async function () {
+
+
+            if (testCount == testWords.length - 1) {
+                $('#btn_nextWord').text('測驗結束')
+                $('#btn_nextWord').attr('onclick', `javascript:location.href='./test_result_mode.html?mode=4'`)
+
+                console.log('done')
+                let test_result = {}
+                test_result.correct = correct
+                test_result.wrong = wrong
+
+                localStorage.setItem('test_result_mode4', JSON.stringify(test_result))
+
+
+            } else {
+                $('#input_test_mode4_answer').val('')
+
+                $('#span_correct_or_wrong').hide()
+                $('#btn_nextWord').hide()
+                $('#confirm_answer_button').show()
+                testCount = testCount + 1
+                $('#test_progressCounter').text((testCount + 1) + '/' + testWords.length)
+                $('#test_progressBar').css('width', ((testCount + 1) / testWords.length) * 100 + '%')
+                await next_word()
+            }
+
+
+        })
+
 
     })
-
-
-    $('#btn_nextWord').click(function () {
-
-
-        if(testCount == testWords.length-1){
-            $('#btn_nextWord').text('測驗結束')
-            $('#btn_nextWord').attr('onclick',`javascript:location.href='./test_result_mode.html?mode=4'`)
-
-            console.log('done')
-            let test_result = {}
-            test_result.correct = correct
-            test_result.wrong = wrong
-
-            localStorage.setItem('test_result_mode4',JSON.stringify(test_result))
-
-
-        }else{
-            $('#input_test_mode4_answer').val('')
-
-            $('#span_correct_or_wrong').hide()
-            $('#btn_nextWord').hide()
-            $('#confirm_answer_button').show()
-            testCount = testCount + 1
-            $('#test_progressCounter').text((testCount + 1) + '/' + testWords.length)
-            $('#test_progressBar').css('width', ((testCount + 1) / testWords.length) * 100 + '%')
-            next_word()
-        }
-
-
-    })
-
-
 })
 
-let init_test = function () {
+let init_test = async function () {
     $('#test_progressCounter').text((testCount + 1) + '/' + testWords.length)
     $('#test_progressBar').css('width', ((testCount + 1) / testWords.length) * 100 + '%')
 
-    let currentWordInfo = getWordInfo(testWords[0])
+    let currentWordInfo = await getWordInfo(testWords[0])
 
     if (currentWordInfo[0].AudioPath != "null") {
         $('#div_no_audio').hide()
@@ -172,8 +191,8 @@ let init_test = function () {
 }
 
 
-let next_word = function () {
-    let currentWordInfo = getWordInfo(testWords[testCount])
+let next_word = async function () {
+    let currentWordInfo = await getWordInfo(testWords[testCount])
 
     $('#test_card_for_mode45_back').html('')
     $('#test_card_for_mode45').show()
@@ -193,9 +212,9 @@ let next_word = function () {
 
 }
 
-let show_wordDetail = function (){
+let show_wordDetail = async function (){
 
-    let wordInfo = getWordInfo(testWords[testCount])
+    let wordInfo = await getWordInfo(testWords[testCount])
     ////
     let word = wordInfo[0].TheWord
 
@@ -209,8 +228,8 @@ let show_wordDetail = function (){
         }
         appendDetailHtml += `</div>`
     }
-
-    appendDetailHtml = appendDetailHtml.replaceAll(word,'<span class="word_highlight">'+word+'</span>')
+    let regex = new RegExp(word, "g");
+    appendDetailHtml = appendDetailHtml.replace(regex,'<span class="word_highlight">'+word+'</span>')
 /////
     $('#test_card_for_mode45').hide()
 

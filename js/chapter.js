@@ -210,6 +210,7 @@ var show_word = async function (wordId) {
     $('#div_next_word').attr('onclick',`javascript:show_next_word('${wordId}')`)
     $('#flip-container').css('top',`${device_height * 0.15}px`)
     $('#front_div-deck-card_align-middle').css('height',`${device_height * 0.7}px`)
+    $('#div-deck-card_back').css('height',`${device_height * 0.7}px`)
     $('#span_front_theWord').text(word_theWord)
     $('#div_front_speech').text(Array.from(thisWordSpeechSet).join(', '))
     $('#div_back_card_info_inner').html(appendHtmlForWordInfo+appendHtmlForWordBlocks)
