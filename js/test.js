@@ -1,5 +1,3 @@
-
-
 let getTestWordsByChapterInLocalStorage = function () {
     let testChaptetestChaptersrs = localStorage.getItem('test_chapters')
     if (testChaptetestChaptersrs == null) {
@@ -32,104 +30,67 @@ let randomArray = function (arr) {
 
 let getWordInfo = async function (wordId) {
 
-    let queryWordInfo = (wid) => new Promise((resolve, reject) => {
-        db.transaction(async function (tx) {
-
-            let queryWordAndWordDef = (wid, transaction) => new Promise((resolve, reject) => {
-                transaction.executeSql('SELECT w.WordId,w.TheWord,w.AudioPath,wd.WordDefId,wd.ChiDefinition,wd.Speech FROM word as w,worddef as wd WHERE w.WordId = ? AND wd.WordId = ? Order By wd.Myorder', [wid, wid], function (tx, rs) {
-
-                    resolve(rs)
-                }, function (tx, error) {
-                    reject(error)
-                });
-            })
-
-
-            let queryWordSen = (wdefid, transaction) => new Promise((resolve, reject) => {
-                transaction.executeSql('SELECT ChiSentence,EngSentence FROM wordsen WHERE WordDefId = ? ORDER BY Myorder', [wdefid], function (tx, rs) {
-
-                    resolve(rs)
-                }, function (tx, error) {
-                    reject(error)
-                });
-            })
-
-            let queryWordAndWordDefResult = await queryWordAndWordDef(wid, tx)
-            let wordInfoArr = []
-            for (let i = 0; i < queryWordAndWordDefResult.rows.length; i++) {
-                let tempJson = {}
-                tempJson.WordId = queryWordAndWordDefResult.rows.item(i).WordId
-                tempJson.WordDefId = queryWordAndWordDefResult.rows.item(i).WordDefId
-                tempJson.TheWord = queryWordAndWordDefResult.rows.item(i).TheWord
-                tempJson.Speech = queryWordAndWordDefResult.rows.item(i).Speech
-                tempJson.ChiDefinition = queryWordAndWordDefResult.rows.item(i).ChiDefinition
-                tempJson.AudioPath = queryWordAndWordDefResult.rows.item(i).AudioPath
-                tempArrayForWordSen = []
-                let queryWordSenResult = await queryWordSen(queryWordAndWordDefResult.rows.item(i).WordDefId, tx)
-                for (let j = 0; j < queryWordSenResult.rows.length; j++) {
-                    let tempJsonForWordSen = {}
-                    tempJsonForWordSen.WordSenId = queryWordSenResult.rows.item(j).WordSenId
-                    tempJsonForWordSen.ChiSentence = queryWordSenResult.rows.item(j).ChiSentence
-                    tempJsonForWordSen.EngSentence = queryWordSenResult.rows.item(j).EngSentence
-                    tempArrayForWordSen.push(tempJsonForWordSen)
-
-                }
-                tempJson.wordSen = tempArrayForWordSen
-                wordInfoArr.push(tempJson)
-            }
-
-            resolve(wordInfoArr)
-
-
+    let queryWordAndWordDef = (wid) => new Promise((resolve, reject) => {
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT w.WordId,w.TheWord,w.AudioPath,wd.WordDefId,wd.ChiDefinition,wd.Speech FROM word as w,worddef as wd WHERE w.WordId = ? AND wd.WordId = ? Order By wd.Myorder', [wid, wid], function (tx, rs) {
+                resolve(rs.rows)
+            }, function (tx, error) {
+                reject(error)
+                swal.fire('資料庫錯誤: ' + error.message);
+            });
         }, function (error) {
-            reject(error)
-            console.log('資料庫錯誤: ' + error.message);
+            console.log('Transaction ERROR: ' + error.message);
         }, function () {
             console.log('Query database OK');
 
         });
     })
-    let wordInfo = await queryWordInfo(wordId)
-    return wordInfo
-    //
-    // var wordInfo = JSON.parse(localStorage.getItem('word')).filter(function (item, index, array) {
-    //     return item.WordId == wordId
-    // })
-    //
-    // let wordInfo_filter_by_wordDef = {}
-    //
-    // for (let i in wordInfo) {
-    //     if (!wordInfo_filter_by_wordDef[wordInfo[i].WordDefId]) {
-    //         wordInfo_filter_by_wordDef[wordInfo[i].WordDefId] = []
-    //         wordInfo_filter_by_wordDef[wordInfo[i].WordDefId].push(wordInfo[i])
-    //     } else {
-    //         wordInfo_filter_by_wordDef[wordInfo[i].WordDefId].push(wordInfo[i])
-    //     }
-    // }
-    // let wordInfoArr = []
-    // for (let i of Object.keys(wordInfo_filter_by_wordDef)) {
-    //     let temp = {}
-    //     temp.AudioPath = wordInfo_filter_by_wordDef[i][0].AudioPath
-    //     temp.ChiDefinition = wordInfo_filter_by_wordDef[i][0].ChiDefinition
-    //     temp.Speech = wordInfo_filter_by_wordDef[i][0].Speech
-    //     temp.TheWord = wordInfo_filter_by_wordDef[i][0].TheWord
-    //     temp.WordDefId = i
-    //     temp.WordId = wordId
-    //     let wordSen = []
-    //     for (let j of wordInfo_filter_by_wordDef[i]) {
-    //         if (j.WordSenId!=null) {
-    //             let tempSenJSON = {}
-    //             tempSenJSON.ChiSentence = j.ChiSentence
-    //             tempSenJSON.EngSentence = j.EngSentence
-    //             tempSenJSON.WordSenId = j.WordSenId
-    //             wordSen.push(tempSenJSON)
-    //         }
-    //     }
-    //     temp.wordSen = wordSen
-    //     wordInfoArr.push(temp)
-    // }
-    //
-    // return wordInfoArr
+
+    let queryWordSen = (wdefid) => new Promise((resolve, reject) => {
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT WordSenId,ChiSentence,EngSentence FROM wordsen WHERE WordDefId = ? ORDER BY Myorder ', [wdefid], function (tx, rs) {
+                resolve(rs.rows)
+            }, function (tx, error) {
+                reject(error)
+                swal.fire('資料庫錯誤: ' + error.message);
+            });
+        }, function (error) {
+            console.log('Transaction ERROR: ' + error.message);
+        }, function () {
+            console.log('Query database OK');
+
+        });
+    })
+
+    let wordInfoArr = []
+
+
+    let queryWordAndWordDefResult = await queryWordAndWordDef(wordId)
+    console.log(queryWordAndWordDefResult)
+    for (let i = 0; i < queryWordAndWordDefResult.length; i++) {
+        let tempJson = {}
+        tempJson.WordId = queryWordAndWordDefResult.item(i).WordId
+        tempJson.WordDefId = queryWordAndWordDefResult.item(i).WordDefId
+        tempJson.TheWord = queryWordAndWordDefResult.item(i).TheWord
+        tempJson.Speech = queryWordAndWordDefResult.item(i).Speech
+        tempJson.ChiDefinition = queryWordAndWordDefResult.item(i).ChiDefinition
+        tempJson.AudioPath = queryWordAndWordDefResult.item(i).AudioPath
+        tempArrayForWordSen = []
+        let queryWordSenResult = await queryWordSen(queryWordAndWordDefResult.item(i).WordDefId)
+        for (let j = 0; j < queryWordSenResult.length; j++) {
+            let tempJsonForWordSen = {}
+            tempJsonForWordSen.WordSenId = queryWordSenResult.item(j).WordSenId
+            tempJsonForWordSen.ChiSentence = queryWordSenResult.item(j).ChiSentence
+            tempJsonForWordSen.EngSentence = queryWordSenResult.item(j).EngSentence
+            tempArrayForWordSen.push(tempJsonForWordSen)
+        }
+        console.log(tempJson)
+        tempJson.wordSen = tempArrayForWordSen
+        wordInfoArr.push(tempJson)
+    }
+
+
+    return wordInfoArr
 
 }
 
