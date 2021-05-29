@@ -359,11 +359,13 @@ let upadteResult = function () {
 
     let testResult = localStorage.getItem('test_result_mode' + mode)
     let student = localStorage.getItem('student')
-
+    let test_chapters = localStorage.getItem('test_chapters')
+    let test_chaptersArray = test_chapters.split(',')
     let postData = {}
     postData.mode = mode
     postData.testResult = JSON.parse(testResult)
     postData.studentId = JSON.parse(student).studentId
+    postData.testChaper = test_chaptersArray
     try {
         var settings = {
             "async": true,
