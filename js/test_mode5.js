@@ -173,7 +173,8 @@ let init_test = async function () {
 
 
     $('#div_sentence').html(front_card_html)
-
+    $('#div_sentence').find('.word_highlight').text('__________')
+    $('#div_sentence').find('.word_highlight').addClass('word_hollow')
 
     if (wordInfo[0].AudioPath != "") {
         $('#audio_source').attr('src', wordInfo[0].AudioPath)
@@ -217,7 +218,8 @@ let next_word = async function () {
 
 
     $('#div_sentence').html(front_card_html)
-
+    $('#div_sentence').find('.word_highlight').text('__________')
+    $('#div_sentence').find('.word_highlight').addClass('word_hollow')
 
     $('#test_card_for_mode45_back').hide()
 
