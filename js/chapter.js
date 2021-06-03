@@ -18,6 +18,11 @@ $(document).ready(function () {
         isFront = false
     })
 
+    $('#div-deck-card_back').click(function () {
+        isFront = true
+
+    })
+
     document.addEventListener('deviceready', function () {
 
         if (cordova.platformId === "browser") {
