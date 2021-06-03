@@ -141,7 +141,7 @@ $(document).ready(function () {
 
             if (testCount == testWords.length - 1) {
                 $('#btn_nextWord').text('測驗結束')
-                $('#btn_nextWord').attr('onclick', `javascript:location.href='./test_result_mode.html?mode=4'`)
+                $('#div_row4_1').html(`<a href="./test_result_mode.html?mode=4" class="btn confirm_button waves-effect">結束測驗</a>`)
 
                 console.log('done')
                 let test_result = {}

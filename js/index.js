@@ -263,3 +263,8 @@ var test = function () {
         });
     });
 }
+
+var show_student_info = function () {
+    var student = JSON.parse(localStorage.getItem('student'))
+    swal.fire(`${student.email}`)
+}
