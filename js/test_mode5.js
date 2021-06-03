@@ -59,9 +59,9 @@ $(document).ready(function () {
             }
         })
 
-        $('#test_card_for_mode45').click(function () {
-            audio_word.play()
-        })
+        // $('#test_card_for_mode45').click(function () {
+        //     audio_word.play()
+        // })
 
 
         $('#confirm_answer_button').click(async function () {
@@ -152,11 +152,12 @@ let init_test = async function () {
 
 
     let sentenceArray = []
+    let sentenceZeroFlag = false
+
     for (let i of wordInfo) {
-        if (i.wordSen.length == 0) {
-            sentenceArray.push({engSen: '<span class="word_highlight">'+word+'</span>', chiSen: '此單字沒有例句'})
-            $('#input_test_mode4_answer').val(word)
-        } else {
+        if (i.wordSen.length != 0) {
+            sentenceZeroFlag = true
+
             let regex = new RegExp(word, "g");
 
             for (let j of i.wordSen) {
@@ -166,6 +167,12 @@ let init_test = async function () {
                 })
             }
         }
+    }
+
+    if(sentenceZeroFlag===false){
+        sentenceArray.push({engSen: '<span class="word_highlight">'+word+'</span>', chiSen: '此單字沒有例句'})
+        $('#input_test_mode4_answer').val(word)
+
     }
 
     let randomIndex = getRandomInt(sentenceArray.length)
@@ -197,11 +204,13 @@ let next_word = async function () {
     $('#test_card_for_mode45').show()
 
     let sentenceArray = []
+
+    let sentenceZeroFlag = false
+
     for (let i of wordInfo) {
-        if (i.wordSen.length == 0) {
-            sentenceArray.push({engSen: '<span class="word_highlight">'+word+'</span>', chiSen: '此單字沒有例句'})
-            $('#input_test_mode4_answer').val(word)
-        } else {
+        if (i.wordSen.length != 0) {
+            sentenceZeroFlag = true
+
             let regex = new RegExp(word, "g");
 
             for (let j of i.wordSen) {
@@ -211,6 +220,12 @@ let next_word = async function () {
                 })
             }
         }
+    }
+
+    if(sentenceZeroFlag===false){
+        sentenceArray.push({engSen: '<span class="word_highlight">'+word+'</span>', chiSen: '此單字沒有例句'})
+        $('#input_test_mode4_answer').val(word)
+
     }
 
     let randomIndex = getRandomInt(sentenceArray.length)

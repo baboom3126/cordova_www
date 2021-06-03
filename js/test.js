@@ -41,7 +41,7 @@ let getWordInfo = async function (wordId) {
         }, function (error) {
             console.log('Transaction ERROR: ' + error.message);
         }, function () {
-            console.log('Query database OK');
+            // console.log('Query database OK');
 
         });
     })
@@ -57,7 +57,7 @@ let getWordInfo = async function (wordId) {
         }, function (error) {
             console.log('Transaction ERROR: ' + error.message);
         }, function () {
-            console.log('Query database OK');
+            // console.log('Query database OK');
 
         });
     })
@@ -66,7 +66,6 @@ let getWordInfo = async function (wordId) {
 
 
     let queryWordAndWordDefResult = await queryWordAndWordDef(wordId)
-    console.log(queryWordAndWordDefResult)
     for (let i = 0; i < queryWordAndWordDefResult.length; i++) {
         let tempJson = {}
         tempJson.WordId = queryWordAndWordDefResult.item(i).WordId
@@ -84,12 +83,11 @@ let getWordInfo = async function (wordId) {
             tempJsonForWordSen.EngSentence = queryWordSenResult.item(j).EngSentence
             tempArrayForWordSen.push(tempJsonForWordSen)
         }
-        console.log(tempJson)
         tempJson.wordSen = tempArrayForWordSen
         wordInfoArr.push(tempJson)
     }
 
-
+    console.log(wordInfoArr)
     return wordInfoArr
 
 }
