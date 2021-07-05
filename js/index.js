@@ -71,18 +71,9 @@ $(document).ready(function () {
 
 var downloadAllData = function () {
 
-    db.transaction(function (tx) {
-        tx.executeSql("DROP TABLE If Exists word")
-        tx.executeSql("DROP TABLE If Exists worddef")
-        tx.executeSql("DROP TABLE If Exists wordsen")
-    }, function (error) {
-        console.log('Transaction ERROR: ' + error.message);
-    }, function () {
-        console.log('drop table successfully');
-    });
 
 
-        swal.showLoading()
+    swal.showLoading()
     let postData = {}
     postData.studentId = studentId
     var settings = {
@@ -114,6 +105,12 @@ var downloadAllData = function () {
             localStorage.setItem("version", JSON.stringify(response.data["version"]))
 
             db.transaction(function (tx) {
+                tx.executeSql("DROP TABLE If Exists word")
+                tx.executeSql("DROP TABLE If Exists worddef")
+                tx.executeSql("DROP TABLE If Exists wordsen")
+
+
+
                 tx.executeSql('CREATE TABLE IF NOT EXISTS word (WordId, TheWord,Status,Remarks,AudioPath)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS worddef (WordDefId, WordId,ChiDefinition,Speech,Myorder,Status)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS wordsen (WordSenId, WordDefId,ChiSentence,EngSentence,Myorder,Status)');
@@ -154,7 +151,7 @@ var downloadAllData = function () {
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log('[FAIL] ')
-        // swal.fire('沒有網路連線')
+        swal.fire('沒有網路連線<br>或<br>伺服器維修中')
         console.log(jqXHR)
         console.log(textStatus)
         console.log(errorThrown)
