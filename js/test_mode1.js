@@ -81,19 +81,22 @@ let getCardHtmlForMode1ByWord = async function (wordId) {
     let word = wordInfo[0].TheWord
 
     let appendDetailHtml = ``
+
+    let regex = new RegExp(word, "g");
+
+
     for (let i of wordInfo) {
         appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech===null?'':i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
         let counter = 1
         for (let j of i.wordSen) {
-            appendDetailHtml += `<p style="color: #5F89C7;">${counter}. ${j.EngSentence}</p><p >${j.ChiSentence}</p>`
+            appendDetailHtml += `<p style="color: #5F89C7;">${counter}. ${(j.EngSentence).replace(regex,'<span class="word_highlight">'+word+'</span>')}</p><p >${j.ChiSentence}</p>`
             counter = counter + 1
         }
         appendDetailHtml += `</div>`
     }
 
-    let regex = new RegExp(word, "g");
 
-    appendDetailHtml = appendDetailHtml.replace(regex,'<span class="word_highlight">'+word+'</span>')
+    // appendDetailHtml = appendDetailHtml.replace(regex,'<span class="word_highlight">'+word+'</span>')
 
 
     let cardHtml = `

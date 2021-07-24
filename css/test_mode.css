@@ -71,6 +71,14 @@ html, body {
     height: 42px;
 }
 
+.i_dont_know_button{
+    width: 100%;
+    background: white 0% 0% no-repeat padding-box;
+    height: 42px;
+    color:#707070;
+}
+
+
 .flip-container {
     perspective: 1000px;
 }
@@ -162,4 +170,8 @@ html, body {
 .div_mode5_chi{
     font-size: 20px;
     color: #707070;
+}
+
+#span_correct_or_wrong{
+    font-size: large;
 }

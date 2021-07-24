@@ -88,7 +88,7 @@ footer {
     font-size: x-large;
 }
 .footer_div_focus img{
-    height:16px;
+    height:20px;
 }
 .footer_div{
     border-top: 4px solid rgba(0,0,0,0);
@@ -103,7 +103,7 @@ footer {
 
 }
 .footer_div img{
-    height:16px;
+    height:20px;
 }
 
 .div_footer_options{
@@ -117,7 +117,7 @@ footer {
     position: absolute;
     left: 10%;
     top: 28%;
-    z-index: 11;
+    z-index: 1001;
     text-align: left;
 }
 .div_opacity{
@@ -128,7 +128,7 @@ footer {
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: 10;
+    z-index: 1000;
 }
 
 .btn:focus{

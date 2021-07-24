@@ -109,6 +109,10 @@ var show_word = async function (wordId) {
 
     let queryWordDefResult = await queryWordDef(wordId)
     let thisWordSpeechSet = new Set()
+
+    var regex = new RegExp(word_theWord, "g");
+
+
     for(let i =0;i<queryWordDefResult.length;i++){
         thisWordSpeechSet.add(queryWordDefResult.item(i).Speech)
         let queryWordSenResult = await queryWordSen(queryWordDefResult.item(i).WordDefId)
@@ -122,7 +126,7 @@ var show_word = async function (wordId) {
         let counter = 1
         for(let j = 0;j<queryWordSenResult.length;j++){
             if (queryWordSenResult.item(j).EngSentence || queryWordSenResult.item(j).ChiSentence) {
-                appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${queryWordSenResult.item(j).EngSentence}</div>
+                appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${queryWordSenResult.item(j).EngSentence.replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')}</div>
                                         <div class="back_card_word_def_chi">${queryWordSenResult.item(j).ChiSentence}</div><br>
                                         `
                 counter = counter + 1
@@ -131,8 +135,7 @@ var show_word = async function (wordId) {
         appendHtmlForWordBlocks += `</div>`
 
     }
-    var regex = new RegExp(word_theWord, "g");
-    appendHtmlForWordBlocks = appendHtmlForWordBlocks.replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')
+    // appendHtmlForWordBlocks = appendHtmlForWordBlocks.replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')
 
     let device_height = document.documentElement.clientHeight
     // $('#div_previous_word').attr('onclick',`javascript:show_previous_word('${wordId}')`)

@@ -4,6 +4,7 @@ var db = null;
 
 
 $(document).ready(function () {
+    $('.sidenav').sidenav();
 
 
     document.addEventListener('deviceready', function () {
@@ -22,6 +23,10 @@ $(document).ready(function () {
         let studentInfo = JSON.parse(localStorage.getItem("student"))
         studentId = studentInfo.studentId
         $('#nav_student_name').html('&nbsp&nbsp' + studentInfo.name)
+
+        $('#side_nav_name').text(studentInfo.name)
+        $('#side_nav_email').text(studentInfo.email)
+
         if (localStorage.getItem('class') == null) {
             downloadAllData()
         } else {

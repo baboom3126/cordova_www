@@ -21,6 +21,46 @@ let getTestWordsByChapterInLocalStorage = function () {
     }
 }
 
+let getTestWordsByChapterInLocalStorageHasSentence = async function () {
+    let wordList = getTestWordsByChapterInLocalStorage()
+    let db1 = null
+
+    return new Promise((resolve, reject) => {
+        document.addEventListener('deviceready', function () {
+
+            if (cordova.platformId === "browser") {
+                db1 = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+            } else {
+                db1 = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
+            }
+
+
+            let hasSenWordList = []
+            db1.transaction(function (tx) {
+                for (let word of wordList) {
+                    tx.executeSql('SELECT ws.WordSenId FROM word as w join worddef as wd on w.WordId = wd.WordId AND w.WordId = ? join wordsen as ws on wd.WordDefId = ws.WordDefId',
+                        [word], function (tx, rs) {
+                            if (rs.rows.length != 0) {
+                                hasSenWordList.push(word)
+                            }
+                        }, function (tx, error) {
+                        });
+                }
+            }, function (error) {
+                reject([])
+            }, function () {
+                resolve(hasSenWordList)
+            });
+        })
+
+    })
+
+}
+
+
 let randomArray = function (arr) {
     arr.sort(function () {
         return (0.5 - Math.random());

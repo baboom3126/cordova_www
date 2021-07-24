@@ -1,4 +1,3 @@
-let testWords = randomArray(getTestWordsByChapterInLocalStorage())
 let testCount = 0;
 let good = []
 let normal = []
@@ -8,116 +7,140 @@ let db = null
 $(document).ready(function () {
 
 
-    document.addEventListener('deviceready', async function () {
+})
 
-        if (cordova.platformId === "browser") {
-            db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
 
-            await nextCard(0)
-            testCount = 1
+
+getTestWordsByChapterInLocalStorageHasSentence().then(testWords=>{
+
+
+
+    $('#btn_answer_good').click(async function(){
+        let id = testWords[testCount - 1]
+        let wordInfo = await getWordInfo(id)
+        let word = wordInfo[0].TheWord
+        good.push({id: id, word: word})
+
+        if (testCount == testWords.length) {
+
+            let test_result_mode3 = {}
+            test_result_mode3.good = good
+            test_result_mode3.normal = normal
+            test_result_mode3.bad = bad
+            localStorage.setItem("test_result_mode3", JSON.stringify(test_result_mode3))
+            $('#div_answers').css('margin-top', '15%')
+            $('#div_answers').html('<a href="./test_result_mode.html?mode=3" class="btn confirm_button waves-effect">結束測驗</a>')
+
+            console.log('done')
         } else {
-            db = window.sqlitePlugin.openDatabase({
-                name: 'word',
-                location: 'default',
-            });
-
-            await nextCard(0)
-            testCount = 1
+            currentWord = testWords[testCount]
+            await nextCard(testCount)
         }
+
+    })
+
+    $('#btn_answer_normal').click(async function(){
+        let id = testWords[testCount - 1]
+        let wordInfo = await getWordInfo(id)
+        let word = wordInfo[0].TheWord
+        normal.push({id: id, word: word})
+
+        if (testCount == testWords.length) {
+
+            let test_result_mode3 = {}
+            test_result_mode3.good = good
+            test_result_mode3.normal = normal
+            test_result_mode3.bad = bad
+            localStorage.setItem("test_result_mode3", JSON.stringify(test_result_mode3))
+            $('#div_answers').css('margin-top', '15%')
+            $('#div_answers').html('<a href="./test_result_mode.html?mode=3" class="btn confirm_button waves-effect">結束測驗</a>')
+
+            console.log('done')
+        } else {
+            currentWord = testWords[testCount]
+            await nextCard(testCount)
+        }
+
+    })
+
+    $('#btn_answer_bad').click(async function(){
+        let id = testWords[testCount - 1]
+        let wordInfo = await getWordInfo(id)
+        let word = wordInfo[0].TheWord
+        bad.push({id: id, word: word})
+
+        if (testCount == testWords.length) {
+
+            let test_result_mode3 = {}
+            test_result_mode3.good = good
+            test_result_mode3.normal = normal
+            test_result_mode3.bad = bad
+            localStorage.setItem("test_result_mode3", JSON.stringify(test_result_mode3))
+            $('#div_answers').css('margin-top', '15%')
+            $('#div_answers').html('<a href="./test_result_mode.html?mode=3" class="btn confirm_button waves-effect">結束測驗</a>')
+
+            console.log('done')
+        } else {
+            currentWord = testWords[testCount]
+            await nextCard(testCount)
+        }
+
     })
 
 
 
 
+    let nextCard = async function (index) {
 
-})
-
-let answer_click = async function (status) {
-
-    let id = testWords[testCount-1]
-    let wordInfo = await getWordInfo(id)
-    let word = wordInfo[0].TheWord
-
-    switch(status){
-        case "good":
-            good.push({id:id,word:word})
-            break;
-        case "normal":
-            normal.push({id:id,word:word})
-            break;
-        case "bad":
-            bad.push({id:id,word:word})
-            break;
+        let cardHtml = await getCardHtmlForMode1ByWord(testWords[index])
+        $('#word_card').html(cardHtml)
+        testCount = testCount + 1
+        $('#test_progressCounter').text(testCount + '/' + testWords.length)
+        $('#test_progressBar').css('width', (testCount / testWords.length) * 100 + '%')
     }
 
-    if (testCount == testWords.length) {
 
-        let test_result_mode3 = {}
-        test_result_mode3.good = good
-        test_result_mode3.normal = normal
-        test_result_mode3.bad = bad
-        localStorage.setItem("test_result_mode3", JSON.stringify(test_result_mode3))
-        $('#div_answers').css('margin-top', '15%')
-        $('#div_answers').html('<a href="./test_result_mode.html?mode=3" class="btn confirm_button waves-effect">結束測驗</a>')
+    let getCardHtmlForMode1ByWord = async function (wordId) {
+        let wordInfo = await getWordInfo(wordId)
+        console.log(wordInfo)
 
-        console.log('done')
-    } else {
-        currentWord = testWords[testCount]
-        await nextCard(testCount)
-    }
+        let word = wordInfo[0].TheWord
 
-}
-
-
-let nextCard = async function (index) {
-
-    let cardHtml = await getCardHtmlForMode1ByWord(testWords[index])
-    $('#word_card').html(cardHtml)
-    testCount = testCount + 1
-    $('#test_progressCounter').text(testCount + '/' + testWords.length)
-    $('#test_progressBar').css('width', (testCount / testWords.length) * 100 + '%')
-}
-
-
-let getCardHtmlForMode1ByWord = async function (wordId) {
-    let wordInfo = await getWordInfo(wordId)
-    console.log(wordInfo)
-
-    let word = wordInfo[0].TheWord
-
-    let appendDetailHtml = ``
-    for (let i of wordInfo) {
-        appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech === null ? '' : i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
-        let counter = 1
-        for (let j of i.wordSen) {
-            appendDetailHtml += `<p style="color: #5F89C7;">${counter}. ${j.EngSentence}</p><p >${j.ChiSentence}</p>`
-            counter = counter + 1
-        }
-        appendDetailHtml += `</div>`
-    }
-
-    let regex = new RegExp(word, "g");
-
-    appendDetailHtml = appendDetailHtml.replace(regex,'<span class="word_highlight">'+word+'</span>')
-
-///
-    let sentenceArray = []
-    for (let i of wordInfo) {
-        if (i.wordSen.length == 0) {
-            sentenceArray.push('<span class="word_highlight">'+word+'</span><br>此單字沒有例句')
-        } else {
+        let appendDetailHtml = ``
+        let regex = new RegExp(word, "g");
+        for (let i of wordInfo) {
+            appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech === null ? '' : i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
+            let counter = 1
             for (let j of i.wordSen) {
-                let regex = new RegExp(word, "g");
-
-                sentenceArray.push(j.EngSentence.replace(regex, '<span class="word_highlight">' + word + '</span>'))
+                appendDetailHtml += `<p style="color: #5F89C7;">${counter}. ${(j.EngSentence).replace(regex, '<span class="word_highlight">' + word + '</span>')}</p><p >${j.ChiSentence}</p>`
+                counter = counter + 1
             }
+            appendDetailHtml += `</div>`
         }
-    }
-
-    let front_card_html = sentenceArray[getRandomInt(sentenceArray.length)]
 
 
-    let cardHtml = `
+        // appendDetailHtml = appendDetailHtml.replace(regex,'<span class="word_highlight">'+word+'</span>')
+
+        //
+
+        let sentenceArray = []
+        for (let i of wordInfo) {
+            for (let j of i.wordSen) {
+                if (j.EngSentence) {
+                    let regex = new RegExp(word, "g");
+                    sentenceArray.push(j.EngSentence.replace(regex, '<span class="word_highlight">' + word + '</span>'))
+                }
+            }
+
+        }
+        if(sentenceArray.length === 0){
+            sentenceArray.push('<span class="word_highlight">'+word+'</span><br>此單字沒有例句')
+        }
+
+        let front_card_html = sentenceArray[getRandomInt(sentenceArray.length)]
+
+
+        let cardHtml = `
             <div class="flip-container" onclick="this.classList.toggle('hover');">
             <div class="flipper">
                 <div class="front align-middle">
@@ -169,7 +192,67 @@ let getCardHtmlForMode1ByWord = async function (wordId) {
     
     
     `
-    return cardHtml
-}
+        return cardHtml
+    }
 
+
+    document.addEventListener('deviceready', async function () {
+
+        if (cordova.platformId === "browser") {
+            db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+
+            await nextCard(0)
+            testCount = 1
+        } else {
+            db = window.sqlitePlugin.openDatabase({
+                name: 'word',
+                location: 'default',
+            });
+
+            await nextCard(0)
+            testCount = 1
+        }
+    })
+
+})
+
+// let testWords = randomArray(getTestWordsByChapterInLocalStorage())
+
+
+
+// let answer_click = async function (status) {
+//
+//     let id = testWords[testCount - 1]
+//     let wordInfo = await getWordInfo(id)
+//     let word = wordInfo[0].TheWord
+//
+//     switch (status) {
+//         case "good":
+//             good.push({id: id, word: word})
+//             break;
+//         case "normal":
+//             normal.push({id: id, word: word})
+//             break;
+//         case "bad":
+//             bad.push({id: id, word: word})
+//             break;
+//     }
+//
+//     if (testCount == testWords.length) {
+//
+//         let test_result_mode3 = {}
+//         test_result_mode3.good = good
+//         test_result_mode3.normal = normal
+//         test_result_mode3.bad = bad
+//         localStorage.setItem("test_result_mode3", JSON.stringify(test_result_mode3))
+//         $('#div_answers').css('margin-top', '15%')
+//         $('#div_answers').html('<a href="./test_result_mode.html?mode=3" class="btn confirm_button waves-effect">結束測驗</a>')
+//
+//         console.log('done')
+//     } else {
+//         currentWord = testWords[testCount]
+//         await nextCard(testCount)
+//     }
+//
+// }
 

@@ -185,6 +185,11 @@ var show_word = async function (wordId) {
 
     let queryWordDefResult = await queryWordDef(wordId)
     let thisWordSpeechSet = new Set()
+
+    var regex = new RegExp(word_theWord, "g");
+
+
+
     for(let i =0;i<queryWordDefResult.length;i++){
         thisWordSpeechSet.add(queryWordDefResult.item(i).Speech)
         let queryWordSenResult = await queryWordSen(queryWordDefResult.item(i).WordDefId)
@@ -198,7 +203,7 @@ var show_word = async function (wordId) {
         let counter = 1
         for(let j = 0;j<queryWordSenResult.length;j++){
             if (queryWordSenResult.item(j).EngSentence || queryWordSenResult.item(j).ChiSentence) {
-                appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${queryWordSenResult.item(j).EngSentence}</div>
+                appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${(queryWordSenResult.item(j).EngSentence).replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')}</div>
                                         <div class="back_card_word_def_chi">${queryWordSenResult.item(j).ChiSentence}</div><br>
                                         `
                 counter = counter + 1
@@ -207,8 +212,7 @@ var show_word = async function (wordId) {
         appendHtmlForWordBlocks += `</div>`
 
     }
-    var regex = new RegExp(word_theWord, "g");
-    appendHtmlForWordBlocks = appendHtmlForWordBlocks.replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')
+    // appendHtmlForWordBlocks = appendHtmlForWordBlocks.replace(regex, '<span class="word_highlight">' + word_theWord + '</span>')
 
     let device_height = document.documentElement.clientHeight
     $('#div_previous_word').attr('onclick',`javascript:show_previous_word('${wordId}')`)
@@ -221,93 +225,7 @@ var show_word = async function (wordId) {
     $('#div_back_card_info_inner').html(appendHtmlForWordInfo+appendHtmlForWordBlocks)
 
     $('#div_back_word_remarks').text(word_remarks)
-    // $('body').append(`<div id="div_opacity">
-    //                         <div class="div_opacity"  onclick="javascript:close_word(this)"></div>
-    //                         <div class="div_previous_word waves-effect" onclick="javascript:show_previous_word('${wordId}')"><img src="./img/btn/buttonBACK@3x.png" height="41" width="41"></div>
-    //                         <div class="div_next_word waves-effect" onclick="javscript:show_next_word('${wordId}')"><img src="./img/btn/buttonNEXT@3x.png" height="41" width="41"></div>
-    //
-    //                         <div class="flip-container" onclick="this.classList.toggle('hover');" style="top:${device_height * 0.15}px">
-    //                                 <div class="flipper">
-    //                                     <div class="front div-deck-card align-middle" style="height:${device_height * 0.7}px;">
-    //                                         <div style="top:42%;position:relative;text-align: center;color: #7193C4;font-size: 26px;font-weight: 600 ;">
-    //                                             ${word_theWord}<br>
-    //                                             <div style="font-size: 14px;font-weight: normal;color: #E25A53;">123</div>
-    //                                         </div>
-    //
-    //                                     </div>
-    //                                     <div class="back div-deck-card" style="height:${device_height * 0.7}px;">
-    //                                         <div class="row">
-    //                                             <div class="back_card_info">
-    //
-    //                                                 ${appendHtmlForWordInfo}
-    //                                                 ${appendHtmlForWordBlocks}
-    //
-    //                                                 <div style="color: #707070;font-weight: 600;padding-bottom: 5px;">單字備註</div>
-    //                                                 <div class="" style="color: #707070;min-height: 98px;border:1px solid #A4C1ED;border-radius: 10px;padding-top:5px;padding-left: 8px;padding-right: 8px;">${word_remarks}</div>
-    //                                                 <br><br><br>
-    //                                             </div>
-    //                                         </div>
-    //                                     </div>
-    //                                 </div>
-    //                             </div>
-    //                         </div>
-    //
-    //                   </div>
-    //
-    // `)
 
-////
-//     var wordInfo = JSON.parse(localStorage.getItem('word')).filter(function (item, index, array) {
-//         return item.WordId == wordId
-//     })
-//
-//     var word_theWord = wordInfo[0].TheWord
-//     var word_audioPath = wordInfo[0].AudioPath
-//     var word_remarks = wordInfo[0].Remarks
-//
-//     let wordInfo_filter_by_wordDef = {}
-//
-//     for (let i in wordInfo) {
-//         if (!wordInfo_filter_by_wordDef[wordInfo[i].WordDefId]) {
-//             wordInfo_filter_by_wordDef[wordInfo[i].WordDefId] = []
-//             wordInfo_filter_by_wordDef[wordInfo[i].WordDefId].push(wordInfo[i])
-//         } else {
-//             wordInfo_filter_by_wordDef[wordInfo[i].WordDefId].push(wordInfo[i])
-//         }
-//     }
-//
-//
-//     var appendHtmlForWordInfo = `<div class="back_card_word_title">${word_theWord}</div>`
-//
-//     ///
-//     let appendHtmlForWordBlocks = ``
-//     for (let i of Object.keys(wordInfo_filter_by_wordDef)) {
-//         appendHtmlForWordBlocks += `<div class="back_card_word_block">`
-//         appendHtmlForWordBlocks += `<div style="color: #707070;font-weight: 600;">解釋</div>
-//                                     <div>
-//                                         <span style="color:#E25A53;">[${wordInfo_filter_by_wordDef[i][0].Speech === null ? '' : wordInfo_filter_by_wordDef[i][0].Speech}] </span>
-//                                         ${wordInfo_filter_by_wordDef[i][0].ChiDefinition}
-//                                     </div>
-//                                     <div style="color: #707070;font-weight: 600;">例句</div>`
-//         let counter = 1
-//         for (let j of wordInfo_filter_by_wordDef[i]) {
-//             ///for sentences
-//             if (j.EngSentence || j.ChiSentence) {
-//                 appendHtmlForWordBlocks += `<div class="back_card_word_sen_eng">${counter}. ${j.EngSentence}</div>
-//                                         <div class="back_card_word_def_chi">${j.ChiSentence}</div><br>
-//                                         `
-//                 counter = counter + 1
-//             }
-//         }
-//         appendHtmlForWordBlocks += `</div>`
-//     }
-//
-//     appendHtmlForWordBlocks = appendHtmlForWordBlocks.replaceAll(word_theWord, '<span class="word_highlight">' + word_theWord + '</span>')
-//
-//
-//     let device_height = document.documentElement.clientHeight
-//
-//
 
 
 }

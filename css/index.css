@@ -46,3 +46,9 @@
 .color_5{
     background-color: #CEA590;
 }
+
+.li_bottom{
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+}
