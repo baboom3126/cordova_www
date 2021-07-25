@@ -111,8 +111,16 @@
     color: #E25A53;
 }
 
-#div_chapterName{
+#div_chapterName {
     font-weight: 600;
     color: #5F89C7;
 
+}
+
+.div_word_volumn_icon {
+    position: absolute;
+    z-index: 1003;
+    top: 2%;
+    right: 5%;
+    color: #7193C4;
 }

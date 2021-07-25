@@ -82,8 +82,8 @@ let getCardHtmlForMode1ByWord = async function (wordId) {
 
     let appendDetailHtml = ``
 
-    let regex = new RegExp(word, "g");
-
+    let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
+    let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
 
     for (let i of wordInfo) {
         appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech===null?'':i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
@@ -111,7 +111,7 @@ let getCardHtmlForMode1ByWord = async function (wordId) {
 
                             </div>
                             <div class="col s2">
-                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">
+<!--                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">-->
                             </div>
                         </div>
                         <div class="row" style="height: 22%;"></div>
@@ -134,7 +134,7 @@ let getCardHtmlForMode1ByWord = async function (wordId) {
                                 <span class="test_card_back_title">${word}</span>
                             </div>
                             <div class="col s2">
-                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">
+<!--                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">-->
                             </div>
                         </div>
                         <div class="row" style="margin-top: 5px;">

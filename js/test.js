@@ -127,7 +127,6 @@ let getWordInfo = async function (wordId) {
         wordInfoArr.push(tempJson)
     }
 
-    console.log(wordInfoArr)
     return wordInfoArr
 
 }

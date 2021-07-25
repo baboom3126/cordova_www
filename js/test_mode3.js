@@ -11,8 +11,22 @@ $(document).ready(function () {
 
 
 
-getTestWordsByChapterInLocalStorageHasSentence().then(testWords=>{
+getTestWordsByChapterInLocalStorageHasSentence().then(result=>{
 
+    let testWords = randomArray(result)
+
+    //過濾後如果完全沒有單字的話
+    if(result.length===0){
+        Swal.fire({
+            title: '測驗的單字都沒有例句',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `返回首頁`,
+            denyButtonText: `取消`,
+        }).then((result) => {
+            location.href = './index.html'
+        })
+    }
 
 
     $('#btn_answer_good').click(async function(){
@@ -107,7 +121,10 @@ getTestWordsByChapterInLocalStorageHasSentence().then(testWords=>{
         let word = wordInfo[0].TheWord
 
         let appendDetailHtml = ``
-        let regex = new RegExp(word, "g");
+
+        let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
+        let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+
         for (let i of wordInfo) {
             appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech === null ? '' : i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
             let counter = 1
@@ -127,7 +144,6 @@ getTestWordsByChapterInLocalStorageHasSentence().then(testWords=>{
         for (let i of wordInfo) {
             for (let j of i.wordSen) {
                 if (j.EngSentence) {
-                    let regex = new RegExp(word, "g");
                     sentenceArray.push(j.EngSentence.replace(regex, '<span class="word_highlight">' + word + '</span>'))
                 }
             }
@@ -152,7 +168,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(testWords=>{
 
                             </div>
                             <div class="col s2">
-                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">
+<!--                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">-->
                             </div>
                         </div>
                         <div class="row" style="height: 20%;"></div>
@@ -175,7 +191,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(testWords=>{
                                 <span class="test_card_back_title">${word}</span>
                             </div>
                             <div class="col s2">
-                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">
+<!--                                <img src="./img/main/iconSTAR@3x.png" height="20" style="margin-top: 10px;">-->
                             </div>
                         </div>
                         <div class="row" style="margin-top: 5px;">

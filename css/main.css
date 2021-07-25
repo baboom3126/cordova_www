@@ -139,3 +139,11 @@ footer {
     background-color: #5F89C7!important;
 
 }
+
+.sidenav-right{
+    float: right;
+    position: relative;
+    z-index: 1;
+    height: 56px;
+    margin: 0 18px;
+}

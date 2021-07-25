@@ -99,6 +99,7 @@ $(document).ready(function () {
             } else {
 
                 $('#confirm_answer_button').hide()
+                $('#i_dont_know_button').hide()
                 $('#btn_nextWord').show()
 
                 await show_wordDetail()
@@ -227,7 +228,10 @@ let show_wordDetail = async function (){
     let word = wordInfo[0].TheWord
 
     let appendDetailHtml = ``
-    let regex = new RegExp(word, "g");
+
+    let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
+    let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+
     for (let i of wordInfo) {
         appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech===null?'':i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
         let counter = 1
