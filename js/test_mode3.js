@@ -18,7 +18,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result=>{
     //過濾後如果完全沒有單字的話
     if(result.length===0){
         Swal.fire({
-            title: '測驗的單字都沒有例句',
+            title: '測驗範圍內的單字都沒有例句',
             showDenyButton: false,
             showCancelButton: false,
             confirmButtonText: `返回首頁`,

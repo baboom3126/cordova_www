@@ -12,9 +12,9 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
 
     let testWords = randomArray(result)
 
-    if(result.length===0){
+    if (result.length === 0) {
         Swal.fire({
-            title: '測驗的單字都沒有例句',
+            title: '測驗範圍內的單字都沒有例句',
             showDenyButton: false,
             showCancelButton: false,
             confirmButtonText: `返回首頁`,
@@ -186,7 +186,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
                 sentenceZeroFlag = true
 
                 let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
-                let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+                let regex = new RegExp('(' + word + '|' + CaptialFirstLetterWord + ')', "g");
 
 
                 for (let j of i.wordSen) {
@@ -209,7 +209,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
 
 
         $('#div_sentence').html(front_card_html)
-        $('#div_sentence').find('.word_highlight').html(word[0]+'&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp')
+        $('#div_sentence').find('.word_highlight').html(word[0] + '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp')
         $('#div_sentence').find('.word_highlight').addClass('word_hollow')
 
         if (wordInfo[0].AudioPath != "") {
@@ -241,7 +241,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
                 sentenceZeroFlag = true
 
                 let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
-                let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+                let regex = new RegExp('(' + word + '|' + CaptialFirstLetterWord + ')', "g");
 
 
                 for (let j of i.wordSen) {
@@ -263,7 +263,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
         let front_card_html = `<div class="div_mode5_eng">${sentenceArray[randomIndex].engSen}</div><br><div class="div_mode5_chi">${sentenceArray[randomIndex].chiSen}</div>`
 
         $('#div_sentence').html(front_card_html)
-        $('#div_sentence').find('.word_highlight').html(word[0]+'&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp')
+        $('#div_sentence').find('.word_highlight').html(word[0] + '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp')
         $('#div_sentence').find('.word_highlight').addClass('word_hollow')
 
         $('#test_card_for_mode45_back').hide()
@@ -287,7 +287,7 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
         let appendDetailHtml = ``
 
         let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
-        let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+        let regex = new RegExp('(' + word + '|' + CaptialFirstLetterWord + ')', "g");
 
         for (let i of wordInfo) {
             appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech === null ? '' : i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
@@ -333,13 +333,16 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
     }
 
 
-
-
-
 })
 
 
 let play_audio = function () {
-    audio_word.load()
-    audio_word.play()
+    if ($('#audio_source').attr('src') === "null") {
+        let word = $('.test_card_back_title').text()
+        var msg = new SpeechSynthesisUtterance(word);
+        window.speechSynthesis.speak(msg);
+    } else {
+        audio_word.load()
+        audio_word.play()
+    }
 }
