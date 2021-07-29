@@ -102,6 +102,9 @@ var show_word = async function (wordId) {
         $('#audio_source').attr('src', word_audioPath)
         audio_word.load()
         audio_word.play()
+    }else if (word_audioPath === "null") {
+        var msg = new SpeechSynthesisUtterance(decodeURIComponent(word));
+        window.speechSynthesis.speak(msg);
     }
 
     let appendHtmlForWordInfo = `<div class="back_card_word_title">${word_theWord}</div>`

@@ -93,6 +93,8 @@ getTestWordsByChapterInLocalStorageHasSentence().then(result => {
                 } else {
 
                     $('#confirm_answer_button').hide()
+                    $('#i_dont_know_button').hide()
+
                     $('#btn_nextWord').show()
 
                     await show_wordDetail()

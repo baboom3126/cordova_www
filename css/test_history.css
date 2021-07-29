@@ -1,0 +1,30 @@
+.div_test_history_detail{
+    border: 1px solid #E1F2FF;
+    width: 100%;
+    background-color: white;
+    font-size: small;
+    text-align: left;
+    display: block;
+    line-height: normal;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: #5F89C7;
+
+}
+
+.div_go_search_btn{
+    background: #5F89C7;
+    color: white;
+    border-radius: 6px;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
+}
+
+.font_bold{
+    font-weight: bold;
+}
+
+.div_border_bottom{
+    border-bottom: 2px white solid;
+}
