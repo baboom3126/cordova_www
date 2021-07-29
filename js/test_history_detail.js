@@ -308,7 +308,7 @@ var show_word = async function (wordId) {
         audio_word.load()
         audio_word.play()
     }else if (word_audioPath === "null") {
-        var msg = new SpeechSynthesisUtterance(decodeURIComponent(word));
+        var msg = new SpeechSynthesisUtterance(decodeURIComponent(word_theWord));
         window.speechSynthesis.speak(msg);
     }
 

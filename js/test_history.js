@@ -6,7 +6,7 @@ $(document).ready(function(){
     let settings = {
         "async": true,
         "crossDomain": true,
-        "url": baseUrl + "app/get_result_history",
+        "url": baseUrl + "app/getTestResultWithChapterNames",
         "method": "POST",
         "headers": {
             "content-type": "application/json",
@@ -19,10 +19,10 @@ $(document).ready(function(){
         for(result of response.data){
             if(!data[result.TestResultId]){
                 data[result.TestResultId]={}
-                data[result.TestResultId]['chapter'] = [[result.TextbookContentChapterName,result.TextbookContentName,result.TextbookName]]
+                data[result.TestResultId]['chapter'] = [[result.TextbookName,result.TextbookContentName,result.TextbookContentChapterName]]
                 data[result.TestResultId]['detail'] = {'TestMode':result.TestMode,'CreateTime':result.CreateTime}
             }else{
-                data[result.TestResultId]['chapter'].push([result.TextbookContentChapterName,result.TextbookContentName,result.TextbookName])
+                data[result.TestResultId]['chapter'] = [[result.TextbookName,result.TextbookContentName,result.TextbookContentChapterName]]
             }
         }
         console.log(data)
