@@ -22,7 +22,7 @@ $(document).ready(function(){
                 data[result.TestResultId]['chapter'] = [[result.TextbookName,result.TextbookContentName,result.TextbookContentChapterName]]
                 data[result.TestResultId]['detail'] = {'TestMode':result.TestMode,'CreateTime':result.CreateTime}
             }else{
-                data[result.TestResultId]['chapter'] = [[result.TextbookName,result.TextbookContentName,result.TextbookContentChapterName]]
+                data[result.TestResultId]['chapter'].push([result.TextbookName,result.TextbookContentName,result.TextbookContentChapterName])
             }
         }
         console.log(data)
