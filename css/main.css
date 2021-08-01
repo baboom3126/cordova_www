@@ -88,7 +88,7 @@ footer {
     font-size: x-large;
 }
 .footer_div_focus img{
-    height:20px;
+    /*height:20px;*/
 }
 .footer_div{
     border-top: 4px solid rgba(0,0,0,0);
@@ -103,7 +103,14 @@ footer {
 
 }
 .footer_div img{
-    height:20px;
+    /*height:20px;*/
+}
+.footer_div i{
+    font-size: 28px;
+}
+.footer_div_focus i{
+    font-size: 28px;
+
 }
 
 .div_footer_options{
