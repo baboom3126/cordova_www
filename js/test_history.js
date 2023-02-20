@@ -29,7 +29,7 @@ $(document).ready(function(){
         let appendHtml = ''
         for(key of Object.keys(data)){
 
-            let appendHtmlForChapterNames = '<p>'
+            let appendHtmlForChapterNames = '<p style="color:#707070;">'
             let counter = 1
             for(chapter of data[key]['chapter']){
                 appendHtmlForChapterNames += counter+'. '+chapter.join('>')+'<br>'
