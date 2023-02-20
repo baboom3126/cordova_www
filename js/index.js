@@ -60,6 +60,8 @@ $(document).ready(function () {
                         }).then((result) => {
                             console.log(result)
                             if (result.isConfirmed) {
+                                setTimeout(function(){swal.showLoading()},500)
+
                                 downloadAllData()
 
                             }

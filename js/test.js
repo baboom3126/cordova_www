@@ -83,6 +83,7 @@ let getTccd = async function(){
                     swal.fire('資料庫錯誤: ' + error.message);
                 });
             }, function (error) {
+                swal.fire('資料庫錯誤: ' + error.message);
                 console.log('Transaction ERROR: ' + error.message);
             }, function () {
                 // console.log('Query database OK');
