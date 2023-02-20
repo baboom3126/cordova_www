@@ -1,10 +1,37 @@
-let getTestWordsByChapterInLocalStorage = function () {
+// localstorage storge tccd is deprecated
+// let getTestWordsByChapterInLocalStorage = function () {
+//     let testChaptetestChaptersrs = localStorage.getItem('test_chapters')
+//     if (testChaptetestChaptersrs == null) {
+//         location.href = './index.html'
+//     } else {
+//         let testChaptersArray = testChaptetestChaptersrs.split(',')
+//         let tccd = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+//         let filterTccd = tccd.filter(function (item, index, array) {
+//             for (let chapterId of testChaptersArray) {
+//                 if (chapterId == item.TextbookContentChapterId) {
+//                     return item
+//                 }
+//             }
+//         })
+//         let result = []
+//         for (let i in filterTccd) {
+//             result.push(filterTccd[i].WordId)
+//         }
+//
+//         return Array.from(new Set(result))
+//     }
+// }
+
+let getTestWordsByChapterFromSql = async function () {
     let testChaptetestChaptersrs = localStorage.getItem('test_chapters')
     if (testChaptetestChaptersrs == null) {
         location.href = './index.html'
     } else {
         let testChaptersArray = testChaptetestChaptersrs.split(',')
-        let tccd = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+        //let tccd = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+
+        let tccd = await getTccdArray()
+
         let filterTccd = tccd.filter(function (item, index, array) {
             for (let chapterId of testChaptersArray) {
                 if (chapterId == item.TextbookContentChapterId) {
@@ -21,8 +48,53 @@ let getTestWordsByChapterInLocalStorage = function () {
     }
 }
 
-let getTestWordsByChapterInLocalStorageHasSentence = async function () {
-    let wordList = getTestWordsByChapterInLocalStorage()
+let getTccdArray = async function(){
+    let tccdRs = await getTccd()
+    let tccd = []
+    for(let i =0; i<tccdRs.length;i++){
+        tccd.push(
+            {
+                TextbookContentChapterId:tccdRs.item(i).TextbookContentChapterId,
+                WordId:tccdRs.item(i).WordId
+            })
+    }
+    return tccd
+}
+
+let getTccd = async function(){
+
+    return new Promise((resolve,reject)=>{
+        let db1 = null
+        document.addEventListener('deviceready', function () {
+
+            if (cordova.platformId === "browser") {
+                db1 = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+            } else {
+                db1 = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
+            }
+            db1.transaction(function (tx) {
+                tx.executeSql('SELECT * FROM textbookContentChapterDeck', [], function (tx, rs) {
+                    resolve(rs.rows)
+                }, function (tx, error) {
+                    reject(error)
+                    swal.fire('資料庫錯誤: ' + error.message);
+                });
+            }, function (error) {
+                console.log('Transaction ERROR: ' + error.message);
+            }, function () {
+                // console.log('Query database OK');
+
+            });
+
+        })
+
+    })}
+
+let getTestWordsByChapterFromSqlHasSentence = async function () {
+    let wordList = await getTestWordsByChapterFromSql()
     let db1 = null
 
     return new Promise((resolve, reject) => {
@@ -59,6 +131,46 @@ let getTestWordsByChapterInLocalStorageHasSentence = async function () {
     })
 
 }
+
+
+// let getTestWordsByChapterInLocalStorageHasSentence = async function () {
+//     let wordList = getTestWordsByChapterInLocalStorage()
+//     let db1 = null
+//
+//     return new Promise((resolve, reject) => {
+//         document.addEventListener('deviceready', function () {
+//
+//             if (cordova.platformId === "browser") {
+//                 db1 = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+//             } else {
+//                 db1 = window.sqlitePlugin.openDatabase({
+//                     name: 'word',
+//                     location: 'default',
+//                 });
+//             }
+//
+//
+//             let hasSenWordList = []
+//             db1.transaction(function (tx) {
+//                 for (let word of wordList) {
+//                     tx.executeSql('SELECT ws.WordSenId FROM word as w join worddef as wd on w.WordId = wd.WordId AND w.WordId = ? join wordsen as ws on wd.WordDefId = ws.WordDefId',
+//                         [word], function (tx, rs) {
+//                             if (rs.rows.length != 0) {
+//                                 hasSenWordList.push(word)
+//                             }
+//                         }, function (tx, error) {
+//                         });
+//                 }
+//             }, function (error) {
+//                 reject([])
+//             }, function () {
+//                 resolve(hasSenWordList)
+//             });
+//         })
+//
+//     })
+//
+// }
 
 
 let randomArray = function (arr) {

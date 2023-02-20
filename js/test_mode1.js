@@ -1,34 +1,40 @@
-let testWords = randomArray(getTestWordsByChapterInLocalStorage())
+let testWords = null
 let testCount = 0;
 let good = []
 let normal = []
 let bad = []
 
 let db = null
-$(document).ready(function () {
 
-    document.addEventListener('deviceready', async function () {
+getTestWordsByChapterFromSql().then(result=>{
+    testWords = randomArray(result)
+    $(document).ready(function () {
 
-        if (cordova.platformId === "browser") {
-            db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+        document.addEventListener('deviceready', async function () {
 
-            await nextCard(0)
-            testCount = 1
-        } else {
-            db = window.sqlitePlugin.openDatabase({
-                name: 'word',
-                location: 'default',
-            });
+            if (cordova.platformId === "browser") {
+                db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+
+                await nextCard(0)
+                testCount = 1
+            } else {
+                db = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
 
 
-            await nextCard(0)
-            testCount = 1
-        }
+                await nextCard(0)
+                testCount = 1
+            }
+        })
+
+
+
     })
 
-
-
 })
+
 
 let answer_click = async function (status) {
     let id = testWords[testCount-1]

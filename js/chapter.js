@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     })
 
-    document.addEventListener('deviceready', function () {
+    document.addEventListener('deviceready', async function () {
 
         if (cordova.platformId === "browser") {
             db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
@@ -43,7 +43,13 @@ $(document).ready(function () {
 
 
         $('#div_chapterName').html('' + decodeURIComponent(thisChapter.chapterName))
-        var textbookContentChapterDeck = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+
+        //localstorage textbookContentChapterDeck is deprecated
+        //var textbookContentChapterDeck = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+        var textbookContentChapterDeck = await getTccdArray()
+
+
+
         if (textbookContentChapterDeck == null) {
 
         } else {

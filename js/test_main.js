@@ -168,7 +168,7 @@ let checkboxCheckedEvent = function () {
 }
 
 
-$('#a_nextPage').click(function () {
+$('#a_nextPage').click(async function () {
 
     localStorage.removeItem('test_chapters')
     let test_chapters = []
@@ -188,7 +188,9 @@ $('#a_nextPage').click(function () {
         if (flag) {
             //////////then check the word in test_chapters is empty or not
 
-            let textbookContentChapterDeck = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+            //localstorage textbookContentChapterDeck is deprecated
+            //let textbookContentChapterDeck = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
+            let textbookContentChapterDeck = await getTccdArray()
 
             let arrayForEmptyChapter = []
 

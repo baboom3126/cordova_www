@@ -7,7 +7,7 @@ let wrong = []
 let db = null;
 
 
-getTestWordsByChapterInLocalStorageHasSentence().then(result => {
+getTestWordsByChapterFromSqlHasSentence().then(result => {
 
 
     let testWords = randomArray(result)

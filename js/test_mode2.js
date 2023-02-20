@@ -1,75 +1,47 @@
-let testWords = randomArray(getTestWordsByChapterInLocalStorage())
+//let testWords = randomArray(getTestWordsByChapterInLocalStorage())
 let testCount = 0;
 let good = []
 let normal = []
 let bad = []
 let db = null
+let testWords= null
+getTestWordsByChapterFromSql().then(result=> {
+    testWords = randomArray(result)
 
-$(document).ready(function () {
 
-    document.addEventListener('deviceready', async function () {
 
-        if (cordova.platformId === "browser") {
-            db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+    $(document).ready(function () {
 
-            await nextCard(0)
-            testCount = 1
-        } else {
-            db = window.sqlitePlugin.openDatabase({
-                name: 'word',
-                location: 'default',
-            });
+        document.addEventListener('deviceready', async function () {
 
-            await nextCard(0)
-            testCount = 1
-        }
+            if (cordova.platformId === "browser") {
+                db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+
+                await nextCard(0)
+                testCount = 1
+            } else {
+                db = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
+
+                await nextCard(0)
+                testCount = 1
+            }
+        })
+
+
+
+
     })
 
 
 
 
+
+
+
 })
-
-let answer_click = async function (status) {
-
-    let id = testWords[testCount-1]
-    let wordInfo = await getWordInfo(id)
-    let word = wordInfo[0].TheWord
-
-    switch(status){
-        case "good":
-            good.push({id:id,word:word})
-            break;
-        case "normal":
-            normal.push({id:id,word:word})
-            break;
-        case "bad":
-            bad.push({id:id,word:word})
-            break;
-    }
-
-
-
-
-    if (testCount == testWords.length) {
-        let test_result_mode2 = {}
-        test_result_mode2.good = good
-        test_result_mode2.normal = normal
-        test_result_mode2.bad = bad
-        localStorage.setItem("test_result_mode2",JSON.stringify(test_result_mode2))
-
-        $('#div_answers').css('margin-top','15%')
-        $('#div_answers').html('<a href="./test_result_mode.html?mode=2" class="btn confirm_button waves-effect">結束測驗</a>')
-
-        console.log('done')
-    } else {
-        currentWord = testWords[testCount]
-        nextCard(testCount)
-    }
-
-}
-
-
 let nextCard = async function (index) {
 
     let cardHtml = await getCardHtmlForMode2ByWord(testWords[index])
@@ -78,7 +50,6 @@ let nextCard = async function (index) {
     $('#test_progressCounter').text(testCount + '/' + testWords.length)
     $('#test_progressBar').css('width', (testCount / testWords.length) * 100 + '%')
 }
-
 
 let getCardHtmlForMode2ByWord = async function (wordId) {
 
@@ -170,6 +141,46 @@ let getCardHtmlForMode2ByWord = async function (wordId) {
     
     `
     return cardHtml
+}
+
+
+let answer_click = async function (status) {
+
+    let id = testWords[testCount-1]
+    let wordInfo = await getWordInfo(id)
+    let word = wordInfo[0].TheWord
+
+    switch(status){
+        case "good":
+            good.push({id:id,word:word})
+            break;
+        case "normal":
+            normal.push({id:id,word:word})
+            break;
+        case "bad":
+            bad.push({id:id,word:word})
+            break;
+    }
+
+
+
+
+    if (testCount == testWords.length) {
+        let test_result_mode2 = {}
+        test_result_mode2.good = good
+        test_result_mode2.normal = normal
+        test_result_mode2.bad = bad
+        localStorage.setItem("test_result_mode2",JSON.stringify(test_result_mode2))
+
+        $('#div_answers').css('margin-top','15%')
+        $('#div_answers').html('<a href="./test_result_mode.html?mode=2" class="btn confirm_button waves-effect">結束測驗</a>')
+
+        console.log('done')
+    } else {
+        currentWord = testWords[testCount]
+        nextCard(testCount)
+    }
+
 }
 
 

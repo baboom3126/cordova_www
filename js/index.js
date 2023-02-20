@@ -113,12 +113,14 @@ var downloadAllData = function () {
                 tx.executeSql("DROP TABLE If Exists word")
                 tx.executeSql("DROP TABLE If Exists worddef")
                 tx.executeSql("DROP TABLE If Exists wordsen")
+                tx.executeSql("DROP TABLE If Exists textbookContentChapterDeck")
 
 
 
                 tx.executeSql('CREATE TABLE IF NOT EXISTS word (WordId, TheWord,Status,Remarks,AudioPath)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS worddef (WordDefId, WordId,ChiDefinition,Speech,Myorder,Status)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS wordsen (WordSenId, WordDefId,ChiSentence,EngSentence,Myorder,Status)');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS textbookContentChapterDeck (TextbookContentChapterId, WordId)');
 
                 for (let word of response.data["word"]) {
                     tx.executeSql('INSERT INTO word (WordId, TheWord,Status,Remarks,AudioPath) VALUES (?,?,?,?,?)',
@@ -134,6 +136,10 @@ var downloadAllData = function () {
                     tx.executeSql('INSERT INTO wordsen (WordSenId, WordDefId,ChiSentence,EngSentence,Myorder,Status) VALUES (?,?,?,?,?,?)',
                         [wordsen.WordSenId,wordsen.WordDefId,wordsen.ChiSentence,wordsen.EngSentence,wordsen.Myorder,wordsen.Status]);
 
+                }
+                for (let tccd of response.data["textbookContentChapterDeck"]){
+                    tx.executeSql('INSERT INTO textbookContentChapterDeck (TextbookContentChapterId,WordId) VALUES (?,?)',
+                        [tccd.TextbookContentChapterId,tccd.WordId]);
                 }
 
             }, function (error) {

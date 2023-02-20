@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 
 
-getTestWordsByChapterInLocalStorageHasSentence().then(result=>{
+getTestWordsByChapterFromSqlHasSentence().then(result=>{
 
     let testWords = randomArray(result)
 
