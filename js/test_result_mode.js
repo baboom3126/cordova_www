@@ -114,7 +114,13 @@ var show_word = async function (wordId) {
     let thisWordSpeechSet = new Set()
 
     let CaptialFirstLetterWord = word_theWord.charAt(0).toUpperCase() + word_theWord.slice(1);
-    let regex = new RegExp('('+word_theWord+'|'+CaptialFirstLetterWord+')', "g");
+
+    let regex = null;
+    try{
+        regex = new RegExp('('+word_theWord+'|'+CaptialFirstLetterWord+')', "g");
+    }catch(error){
+        console.log(error)
+    }
 
     for(let i =0;i<queryWordDefResult.length;i++){
         thisWordSpeechSet.add(queryWordDefResult.item(i).Speech)

@@ -6,13 +6,21 @@ let wrong = []
 
 let db = null;
 
+$(document).ready(function () {
+
+    swal.fire({
+        title: '讀取資料中'
+    });
+    swal.showLoading();
+})
+
 
 getTestWordsByChapterFromSql().then(result=>{
     let testWords = randomArray(result)
 
     $(document).ready(function () {
         document.addEventListener('deviceready', async function () {
-
+            swal.close()
 
             var settings = {
                 "async": true,
@@ -235,8 +243,13 @@ getTestWordsByChapterFromSql().then(result=>{
         let appendDetailHtml = ``
 
         let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
-        let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
 
+        let regex = null
+        try{
+            regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+        }catch(error){
+            console.log(error)
+        }
         for (let i of wordInfo) {
             appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech===null?'':i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
             let counter = 1

@@ -108,7 +108,7 @@ var downloadAllData = function () {
             localStorage.setItem("textbook", JSON.stringify(response.data["textbook"]))
             localStorage.setItem("textbookContent", JSON.stringify(response.data["textbookContent"]))
             localStorage.setItem("textbookContentChapter", JSON.stringify(response.data["textbookContentChapter"]))
-            localStorage.setItem("textbookContentChapterDeck", JSON.stringify(response.data["textbookContentChapterDeck"]))
+            localStorage.setItem("textbookContentChapterDeck", "")
             localStorage.setItem("version", JSON.stringify(response.data["version"]))
 
             db.transaction(function (tx) {

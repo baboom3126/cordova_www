@@ -6,6 +6,10 @@ let db = null
 
 $(document).ready(function () {
 
+    swal.fire({
+        title: '讀取資料中'
+    });
+    swal.showLoading();
 
 })
 
@@ -123,8 +127,13 @@ getTestWordsByChapterFromSqlHasSentence().then(result=>{
         let appendDetailHtml = ``
 
         let CaptialFirstLetterWord = word.charAt(0).toUpperCase() + word.slice(1);
-        let regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
 
+        let regex = null
+        try{
+            regex = new RegExp('('+word+'|'+CaptialFirstLetterWord+')', "g");
+        }catch(error){
+            console.log(error)
+        }
         for (let i of wordInfo) {
             appendDetailHtml += `<div class="back_card_word_block"><b><span style="color:grey;">解釋</span><p><span style="color: green;">${i.Speech === null ? '' : i.Speech} </span> ${i.ChiDefinition}</b> </p><b><span style="color:grey;">例句</span></b>`
             let counter = 1
@@ -213,7 +222,7 @@ getTestWordsByChapterFromSqlHasSentence().then(result=>{
 
 
     document.addEventListener('deviceready', async function () {
-
+        swal.close()
         if (cordova.platformId === "browser") {
             db = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
 
