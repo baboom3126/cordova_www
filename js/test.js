@@ -30,15 +30,8 @@ let getTestWordsByChapterFromSql = async function () {
         let testChaptersArray = testChaptetestChaptersrs.split(',')
         //let tccd = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
 
-        let tccd = await getTccdArray()
+        let filterTccd = tccdRsToArray(await getTccdByChapters(testChaptersArray))
 
-        let filterTccd = tccd.filter(function (item, index, array) {
-            for (let chapterId of testChaptersArray) {
-                if (chapterId == item.TextbookContentChapterId) {
-                    return item
-                }
-            }
-        })
         let result = []
         for (let i in filterTccd) {
             result.push(filterTccd[i].WordId)
@@ -60,6 +53,57 @@ let getTccdArray = async function(){
     }
     return tccd
 }
+
+let tccdRsToArray = function (rs){
+    let temp = []
+    for(let i=0 ; i< rs.length; i++){
+        temp.push(
+            {
+                TextbookContentChapterId:rs.item(i).TextbookContentChapterId,
+                WordId:rs.item(i).WordId
+            })
+    }
+    return temp
+}
+
+let getTccdByChapters = async function(chapters){
+    let sqlWhereString = ''
+    return new Promise((resolve,reject)=>{
+        let db1 = null
+        document.addEventListener('deviceready', function () {
+
+            if (cordova.platformId === "browser") {
+                db1 = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+            } else {
+                db1 = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
+            }
+            for(let chapter of chapters){
+                sqlWhereString+=`OR TextbookContentChapterId='${chapter}'`
+            }
+
+            db1.transaction(function (tx) {
+                tx.executeSql(`SELECT DISTINCT * FROM textbookContentChapterDeck WHERE 1=0 ${sqlWhereString}`, [], function (tx, rs) {
+                    resolve(rs.rows)
+                }, function (tx, error) {
+                    reject(error)
+                    swal.fire('資料庫錯誤: ' + error.message);
+                });
+            }, function (error) {
+                swal.fire('資料庫錯誤: ' + error.message);
+                console.log('Transaction ERROR: ' + error.message);
+            }, function () {
+                // console.log('Query database OK');
+
+            });
+
+        })
+
+    })}
+
+
 
 let getTccd = async function(){
 

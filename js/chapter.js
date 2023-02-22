@@ -46,18 +46,14 @@ $(document).ready(function () {
 
         //localstorage textbookContentChapterDeck is deprecated
         //var textbookContentChapterDeck = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
-        var textbookContentChapterDeck = await getTccdArray()
+        //var textbookContentChapterDeck = await getTccdArray()
 
 
+//thisChapter.chapterId
 
-        if (textbookContentChapterDeck == null) {
+        filterDeck = tccdRsToArray(await getTccdByChapters([thisChapter.chapterId]))
+        showWordList(filterDeck)
 
-        } else {
-            filterDeck = textbookContentChapterDeck.filter(function (item, index, array) {
-                return item.TextbookContentChapterId == thisChapter.chapterId
-            })
-            showWordList(filterDeck)
-        }
 
         for (let i in filterDeck) {
             wordListArray.push(filterDeck[i].WordId)

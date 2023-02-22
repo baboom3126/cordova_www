@@ -17,6 +17,7 @@ html, body {
 }
 
 .test_card {
+    -webkit-overflow-scrolling: touch;
     overflow-y: scroll;
     height: 100%;
     background: #FFFFFF 0% 0% no-repeat padding-box;
