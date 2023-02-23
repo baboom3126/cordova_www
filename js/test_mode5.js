@@ -362,6 +362,8 @@ getTestWordsByChapterFromSqlHasSentence().then(result => {
     }
 
 
+}).catch(err=>{
+    swal.fire(`資料庫錯誤 ${err}`)
 })
 
 

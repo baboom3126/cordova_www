@@ -138,6 +138,7 @@ let getTccd = async function(){
 
     })}
 
+/*
 let getTestWordsByChapterFromSqlHasSentence = async function () {
     let wordList = await getTestWordsByChapterFromSql()
     let db1 = null
@@ -176,6 +177,60 @@ let getTestWordsByChapterFromSqlHasSentence = async function () {
     })
 
 }
+*/
+
+let getTestWordsByChapterFromSqlHasSentence = async function(){
+
+    let testChapters = localStorage.getItem('test_chapters')
+    let testChaptersArray = testChapters.split(',')
+    let conditionSQLString = ``
+    for(let chapter of testChaptersArray){
+        conditionSQLString+=`or tccd.TextbookContentChapterId ='${chapter}'`
+    }
+    conditionSQLString = conditionSQLString.slice(3)
+
+    return new Promise((resolve,reject)=>{
+        document.addEventListener('deviceready', function () {
+
+            if (cordova.platformId === "browser") {
+                db1 = openDatabase('word', '1.0', 'wordDB', 50 * 1024 * 1024);
+            } else {
+                db1 = window.sqlitePlugin.openDatabase({
+                    name: 'word',
+                    location: 'default',
+                });
+            }
+
+            let wordIdList = []
+            db1.transaction(function (tx) {
+                tx.executeSql(`SELECT distinct w.WordId
+                                   FROM word as w
+                                   join textbookcontentchapterdeck as tccd on tccd.WordId =w.WordId and ( ${conditionSQLString} )
+                                   join worddef as wd on w.WordId = wd.WordId
+                                   join wordsen as ws on wd.WordDefId = ws.WordDefId`,
+                    [], function (tx, rs) {
+                        for(let i=0;i<rs.rows.length;i++){
+                            wordIdList.push(rs.rows.item(i).WordId)
+                        }
+                        resolve(wordIdList)
+                    }, function (tx, error) {
+                        reject(error)
+                    });
+
+            }, function (error) {
+                reject(error)
+            }, function () {
+
+            });
+
+        })
+    })
+
+
+
+
+}
+
 
 
 // let getTestWordsByChapterInLocalStorageHasSentence = async function () {
