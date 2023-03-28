@@ -8,7 +8,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
     <!-- <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover"> -->
     <meta name="color-scheme" content="light dark">
@@ -42,9 +42,11 @@
             width: 80%;
             perspective: 1000px;
         }
+
         .flip-container.hover .flipper {
             transform: rotateY(180deg);
         }
+
         /*.flip-container,*/
         /*.front,*/
         /*.back {*/
@@ -57,21 +59,24 @@
             -webkit-transform-style: preserve-3d;
             position: relative;
         }
+
         .front,
         .back {
             -webkit-perspective: 0;
             -webkit-backface-visibility: hidden;
-            -webkit-transform: translate3d(0,0,0);
-            visibility:visible;
+            -webkit-transform: translate3d(0, 0, 0);
+            visibility: visible;
             backface-visibility: hidden;
             position: absolute;
             top: 0;
             left: 0;
         }
+
         .front {
             z-index: 2;
             transform: rotateY(0deg);
         }
+
         .back {
             transform: rotateY(180deg);
         }
@@ -99,139 +104,158 @@
         .span_fontLarge {
             font-size: large;
         }
-
     </style>
 </head>
 
 <body>
 
 
-<div class="nav_safe_area">
-    <nav class="main_color no_shadow">
-        <div class="nav-wrapper">
-            <a href="./index.html" class="brand-logo"><img src="./img/main/logo.png"></a>
-<!--            <a class="sidenav-left" style="margin-left: 10px;" onclick="javascript:div_opacity()">-->
-<!--                <img src="./img/main/log%20out%20icon@2x.png" style="padding-left: 10px;" height="15">-->
-<!--            </a>-->
-
-        </div>
-    </nav>
-</div>
-
-
-<div class="row">
-    <div class="col s2" onclick="javascript:page_go_back()" style="text-align: center;padding-top: 32px;padding-bottom: 10px;font-size: 20px;color: #5F89C7;margin-bottom: 15px"><img src="./img/main/iconBACKWARD@3x.png" height="24"></div>
-    <div class="col s8"
-         style="text-align: center;padding-top: 30px;padding-bottom: 10px;font-size: 20px;margin-bottom: 15px"
-         id="div_chapterName">
-    </div>
-    <div class="col s2"></div>
-
-
-</div>
-
-<div class="container" id="div_word_list">
-<!--    <div class="row div_word_row">-->
-<!--        <div class="col s10">-->
-<!--            <div class="">-->
-<!--                123-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--        <div class="col s2">-->
-<!--            <div class="div_word_element_right">-->
-<!--                ★-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-<!--    <div class="row div_word_row">-->
-<!--        <div class="col s10">-->
-<!--            <div class="">-->
-<!--                123-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--        <div class="col s2">-->
-<!--            <div class="div_word_element_right">-->
-<!--                ☆-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-
-</div>
-
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<audio id="audio_word" controls style="display: none;">
-    <source id=audio_source src="" type="audio/mp3">
-</audio>
-
-<footer>
-    <div class="div_footer_options"><a href="./index.html" class="footer_div waves-effect"><img
-            src="./img/main/iconMAIN@2x.png"><br>
-    </a><a href="./test_history.html" class="footer_div waves-effect"><i class="material-icons">restore</i>
-        <br></a><a href="./test_main.html" class="footer_div waves-effect"><img src="./img/main/exam_icon_128.png" >
-        <br></a></div>
-</footer>
-
-
-<script src="js/chapter.js"></script>
-<script src="js/test.js"></script>
-
-
-<div id="div_opacity" style="display: none;">
-    <div class="div_opacity" onclick="javascript:close_word(this)"></div>
-    <div class="div_previous_word waves-effect" id="div_previous_word" onclick="javascript:show_previous_word('')"><img src="./img/btn/buttonBACK@3x.png" height="41" width="41"></div>
-    <div class="div_next_word waves-effect" id="div_next_word" onclick="javscript:show_next_word('')"><img src="./img/btn/buttonNEXT@3x.png" height="41" width="41"></div>
-
-<div class="flip-container" id="flip-container" onclick="this.classList.toggle('hover');" ><!--    style="top:110.39999999999999px"-->
-        <div class="flipper">
-            <div class="front div-deck-card align-middle" id="front_div-deck-card_align-middle"><!--style="height:515.1999999999999px;"-->
-                <div id="div_front_theWord" style="top:42%;position:relative;text-align: center;color: #7193C4;font-size: 26px;font-weight: 600 ;">
-                    <span id="span_front_theWord">there</span><br>
-                    <div style="font-size: 14px;font-weight: normal;color: #E25A53;" id="div_front_speech"></div>
-                </div>
+    <div class="nav_safe_area">
+        <nav class="main_color no_shadow">
+            <div class="nav-wrapper">
+                <a href="./index.html" class="brand-logo"><img src="./img/main/logo.png"></a>
+                <!--            <a class="sidenav-left" style="margin-left: 10px;" onclick="javascript:div_opacity()">-->
+                <!--                <img src="./img/main/log%20out%20icon@2x.png" style="padding-left: 10px;" height="15">-->
+                <!--            </a>-->
 
             </div>
-            <div class="back div-deck-card" id="div-deck-card_back" style="">
-                <div id="div_word_volumn_icon" class="div_word_volumn_icon"><i class="material-icons" style="font-size: 3rem;">volume_up</i></div>
-                <div class="row">
-                    <div class="back_card_info" id="">
-                        <div id="div_back_card_info_inner">
+        </nav>
+    </div>
 
 
+    <div class="row">
+        <div class="col s3" onclick="javascript:page_go_back()"
+            style="text-align: center;padding-top: 32px;padding-bottom: 10px;font-size: 20px;color: #5F89C7;margin-bottom: 15px">
+            <img src="./img/main/iconBACKWARD@3x.png" height="24"></div>
+        <div class="col s6"
+            style="text-align: center;padding-top: 30px;padding-bottom: 10px;font-size: 20px;margin-bottom: 15px"
+            id="div_chapterName">
+        </div>
+        <div class="col s3" style="padding-top: 32px;">
+            <!-- Switch -->
+            <div class="switch">
+                <label>
+                    <input type="checkbox" id="switch_chineseDef">
+                    <span class="lever"></span>
+                </label>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="container" id="div_word_list">
+        <!--    <div class="row div_word_row">-->
+        <!--        <div class="col s10">-->
+        <!--            <div class="">-->
+        <!--                123-->
+        <!--            </div>-->
+
+        <!--        </div>-->
+        <!--        <div class="col s2">-->
+        <!--            <div class="div_word_element_right">-->
+        <!--                ★-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </div>-->
+
+        <!--    <div class="row div_word_row">-->
+        <!--        <div class="col s10">-->
+        <!--            <div class="">-->
+        <!--                123-->
+        <!--            </div>-->
+
+        <!--        </div>-->
+        <!--        <div class="col s2">-->
+        <!--            <div class="div_word_element_right">-->
+        <!--                ☆-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </div>-->
+
+
+    </div>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <audio id="audio_word" controls style="display: none;">
+        <source id=audio_source src="" type="audio/mp3">
+    </audio>
+
+    <footer>
+        <div class="div_footer_options"><a href="./index.html" class="footer_div waves-effect"><img
+                    src="./img/main/iconMAIN@2x.png"><br>
+            </a><a href="./test_history.html" class="footer_div waves-effect"><i class="material-icons">restore</i>
+                <br></a><a href="./test_main.html" class="footer_div waves-effect"><img
+                    src="./img/main/exam_icon_128.png">
+                <br></a></div>
+    </footer>
+
+
+    <script src="js/chapter.js"></script>
+    <script src="js/test.js"></script>
+
+
+    <div id="div_opacity" style="display: none;">
+        <div class="div_opacity" onclick="javascript:close_word(this)"></div>
+        <div class="div_previous_word waves-effect" id="div_previous_word" onclick="javascript:show_previous_word('')">
+            <img src="./img/btn/buttonBACK@3x.png" height="41" width="41"></div>
+        <div class="div_next_word waves-effect" id="div_next_word" onclick="javscript:show_next_word('')"><img
+                src="./img/btn/buttonNEXT@3x.png" height="41" width="41"></div>
+
+        <div class="flip-container" id="flip-container" onclick="this.classList.toggle('hover');">
+            <!--    style="top:110.39999999999999px"-->
+            <div class="flipper">
+                <div class="front div-deck-card align-middle" id="front_div-deck-card_align-middle">
+                    <!--style="height:515.1999999999999px;"-->
+                    <div id="div_front_theWord"
+                        style="top:42%;position:relative;text-align: center;color: #7193C4;font-size: 26px;font-weight: 600 ;">
+                        <span id="span_front_theWord">there</span><br>
+                        <div style="font-size: 14px;font-weight: normal;color: #E25A53;" id="div_front_speech"></div>
+                    </div>
+
+                </div>
+                <div class="back div-deck-card" id="div-deck-card_back" style="">
+                    <div id="div_word_volumn_icon" class="div_word_volumn_icon"><i class="material-icons"
+                            style="font-size: 3rem;">volume_up</i></div>
+                    <div class="row">
+                        <div class="back_card_info" id="">
+                            <div id="div_back_card_info_inner">
+
+
+                            </div>
+
+                            <div style="color: #707070;font-weight: 600;padding-bottom: 5px;">單字備註</div>
+                            <div class="" id="div_back_word_remarks"
+                                style="color: #707070;min-height: 98px;border:1px solid #A4C1ED;border-radius: 10px;padding-top:5px;padding-left: 8px;padding-right: 8px;">
+                            </div>
+                            <br><br><br>
                         </div>
-
-                        <div style="color: #707070;font-weight: 600;padding-bottom: 5px;">單字備註</div>
-                        <div class="" id="div_back_word_remarks" style="color: #707070;min-height: 98px;border:1px solid #A4C1ED;border-radius: 10px;padding-top:5px;padding-left: 8px;padding-right: 8px;"></div>
-                        <br><br><br>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal bottom-sheet">
-    <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>Modal Header</h4>
+            <p>A bunch of text</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
     </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
-  </div>
 
 
-  
+
 </body>
 
 </html>

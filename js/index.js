@@ -109,7 +109,6 @@ var downloadAllData = function () {
             swal.fire('伺服器維修中')
         } else {
 
-
             localStorage.setItem("class", JSON.stringify(response.data["class"]))
             localStorage.setItem("classTextbook", JSON.stringify(response.data["classTextbook"]))
             localStorage.setItem("textbook", JSON.stringify(response.data["textbook"]))

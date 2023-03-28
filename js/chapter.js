@@ -12,6 +12,24 @@ var wordListArray = []
 let isFront = true
 
 $(document).ready(function () {
+
+    $('#switch_chineseDef').prop( "checked", localStorage.getItem('showChinese')=='true' )
+    $('#switch_chineseDef').change(function(){
+        const isChecked = this.checked
+        if(isChecked==true){
+            $('.span_chiDef').css('display','')
+            $('.div_word_row').css('padding-left','20px')
+
+            localStorage.setItem('showChinese','true')
+        }
+        else if(isChecked==false){
+            $('.span_chiDef').css('display','none')
+            $('.div_word_row').css('padding-left','30px')
+
+            localStorage.setItem('showChinese','false')
+        }
+    })
+
     $('.modal').modal();
 
     $('#front_div-deck-card_align-middle').click(function () {
@@ -54,6 +72,7 @@ $(document).ready(function () {
 
         filterDeck = tccdRsToArray(await getTccdByChapters([thisChapter.chapterId]))
         showWordList(filterDeck)
+        
 
 
         for (let i in filterDeck) {
@@ -63,20 +82,21 @@ $(document).ready(function () {
 })
 
 var showWordList = function (data) {
+    const showChinese = localStorage.getItem('showChinese')
 
     db.transaction(function (tx) {
 
         for (let i of data) {
-            tx.executeSql('SELECT TheWord FROM word WHERE WordId = ?', [i.WordId], function (tx, rs) {
+            tx.executeSql('SELECT TheWord, ChiDefinition FROM word as w join worddef as wd on w.WordId = wd.WordId Where w.WordId = ? limit 1', [i.WordId], function (tx, rs) {
 
-                let appendHtml = `    <div class="row div_word_row" onclick="javascript:show_word('${i.WordId}')">
-                            <div class="col s9">
+                let appendHtml = `    <div class="row div_word_row" onclick="javascript:show_word('${i.WordId}')" style="${showChinese=='true'?'padding-left:20px;':''}">
+                            <div class="col s10">
                                 <div class="">
-                                ${rs.rows.item(0).TheWord}
+                                ${rs.rows.item(0).TheWord}&nbsp&nbsp<span class="span_chiDef" style="${showChinese=='true'?'':'display:none;'}">${rs.rows.item(0).ChiDefinition}</span>
                                 </div>
 
                             </div>
-                            <div class="col s3" onclick="javascript:addToFavoriteList(event,'${i.WordId}')">
+                            <div class="col s2" onclick="javascript:addToFavoriteList(event,'${i.WordId}')">
                                     <i class="material-icons" style="vertical-align: middle;">add</i>
                             </div>
                         </div>`
