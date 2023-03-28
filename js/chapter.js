@@ -12,6 +12,7 @@ var wordListArray = []
 let isFront = true
 
 $(document).ready(function () {
+    $('.modal').modal();
 
     $('#front_div-deck-card_align-middle').click(function () {
         console.log('front clicked')
@@ -69,18 +70,14 @@ var showWordList = function (data) {
             tx.executeSql('SELECT TheWord FROM word WHERE WordId = ?', [i.WordId], function (tx, rs) {
 
                 let appendHtml = `    <div class="row div_word_row" onclick="javascript:show_word('${i.WordId}')">
-                            <div class="col s10">
+                            <div class="col s9">
                                 <div class="">
                                 ${rs.rows.item(0).TheWord}
                                 </div>
 
                             </div>
-                            <div class="col s2">
-                                <div class="div_word_element_right">
-<!--                                    <img src="./img/main/iconSTAR@3x.png" height="16">-->
-<!--                                    <img src="./img/main/iconSTAR_selected@3x.png" height="16">-->
-
-                                </div>
+                            <div class="col s3" onclick="javascript:addToFavoriteList(event,'${i.WordId}')">
+                                    <i class="material-icons" style="vertical-align: middle;">add</i>
                             </div>
                         </div>`
                 $('#div_word_list').append(appendHtml)
@@ -290,4 +287,11 @@ var replay_audio = function (word_audioPath, word) {
         window.speechSynthesis.speak(msg);
     }
 
+}
+
+
+const addToFavoriteList = function(event,wordId){
+    event.stopPropagation();
+
+    console.log(wordId)
 }

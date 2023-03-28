@@ -172,6 +172,85 @@ var downloadAllData = function () {
     })
 }
 
+var show_add_class = function(){
+    console.log(`show_add_class`)
+    Swal.fire({
+        title: '請輸入班級代碼',
+        input: 'text',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: '確認',
+        cancelButtonText:'取消',
+        showLoaderOnConfirm: true,
+        preConfirm: (classCode) => {
+            console.log('[AJAX] newClassStudentByCLassCode')
+            let postData = {}
+            postData.studentId = studentId
+            postData.classCode = classCode
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": baseUrl + "app/newClassStudentByCLassCode",
+                "method": "POST",
+                "headers": {
+                    "content-type": "application/json",
+                    "cache-control": "no-cache",
+                },
+                data: JSON.stringify(postData)
+            }
+    
+            $.ajax(settings).done(function (response) {
+                console.log(response)
+                var code = response.code
+                if (code != 200) {
+                    swal.fire('伺服器維修中')
+                } else {
+                    if (response.message == "multiple class") {
+                        swal.fire('已有相同的班級')
+                    }else if(response.message == "not found"){
+                        swal.fire('邀請碼錯誤')
+                    } else {
+                        let data = response.data.queryClassBySid
+    
+                        localStorage.setItem('classList', JSON.stringify(data))
+                        Swal.fire({
+                            title: '加入成功',
+                            showDenyButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: `確定`,
+                            denyButtonText: `No`,
+                        }).then((result) => {
+                            /* Read more about isConfirmed, isDenied below */
+                            setTimeout(function(){
+                                downloadAllData()
+                            },1000);
+                            
+                         
+                        })
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log('[FAIL] ')
+                // swal.fire('沒有網路連線')
+                console.log(jqXHR)
+                console.log(textStatus)
+                console.log(errorThrown)
+    
+            });
+
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        console.log(result)
+      })
+}
+
+// Swal.showValidationMessage(
+//     `Request failed: ${error}`
+//   )
+
 
 var join_class = function () {
 
