@@ -60,9 +60,16 @@ $(document).ready(function () {
                         }).then((result) => {
                             console.log(result)
                             if (result.isConfirmed) {
-                                setTimeout(function(){swal.showLoading()},500)
-
-                                downloadAllData()
+                                swal.fire({
+                                    title: '請稍後',
+                                    text: '更新資料中...',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    onOpen: () => {
+                                        downloadAllData()
+                                    }
+                                })
 
                             }
                         })
@@ -178,8 +185,13 @@ var show_add_class = function(){
         title: '請輸入班級代碼',
         input: 'text',
         inputAttributes: {
-          autocapitalize: 'off'
+          autocapitalize: 'off',
+          class: 'center-align' 
+
         },
+        customClass: {
+            input: 'center-align'
+          },
         showCancelButton: true,
         confirmButtonText: '確認',
         cancelButtonText:'取消',
@@ -223,9 +235,19 @@ var show_add_class = function(){
                             denyButtonText: `No`,
                         }).then((result) => {
                             /* Read more about isConfirmed, isDenied below */
-                            setTimeout(function(){
-                                downloadAllData()
-                            },1000);
+                            
+                                swal.fire({
+                                    title: '請稍後',
+                                    text: '更新資料中...',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    onOpen: () => {
+                                        downloadAllData()
+                                    }
+                                })
+                    
+                            
                             
                          
                         })
