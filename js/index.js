@@ -129,6 +129,8 @@ var downloadAllData = function () {
                 tx.executeSql('CREATE TABLE IF NOT EXISTS worddef (WordDefId, WordId,ChiDefinition,Speech,Myorder,Status)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS wordsen (WordSenId, WordDefId,ChiSentence,EngSentence,Myorder,Status)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS textbookContentChapterDeck (TextbookContentChapterId, WordId)');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS customdeck (deckId, deckName)');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS customdecklist (deckId,wordId)');
 
                 for (let word of response.data["word"]) {
                     tx.executeSql('INSERT INTO word (WordId, TheWord,Status,Remarks,AudioPath) VALUES (?,?,?,?,?)',

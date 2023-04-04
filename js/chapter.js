@@ -1,6 +1,8 @@
 var urlKeyValue = location.href.split('?')[1]
 var splitUrlKeyValue = urlKeyValue.split('&')
 var thisChapter = {}
+let globalWordIdForCustomDeck
+
 for (var i in splitUrlKeyValue) {
     var tempURL = splitUrlKeyValue[i].split('=')
     thisChapter[tempURL[0]] = tempURL[1]
@@ -78,6 +80,8 @@ $(document).ready(function () {
         for (let i in filterDeck) {
             wordListArray.push(filterDeck[i].WordId)
         }
+
+        
     })
 })
 
@@ -96,7 +100,7 @@ var showWordList = function (data) {
                                 </div>
 
                             </div>
-                            <div class="col s2" onclick="javascript:addToFavoriteList(event,'${i.WordId}')">
+                            <div class="col s2" onclick="javascript:showCustomDeckListInModal(event,'${i.WordId}','${rs.rows.item(0).TheWord}')">
                                     <i class="material-icons" style="vertical-align: middle;">add</i>
                             </div>
                         </div>`
@@ -310,8 +314,173 @@ var replay_audio = function (word_audioPath, word) {
 }
 
 
-const addToFavoriteList = function(event,wordId){
+const showCustomDeckListInModal = function(event,wordId,theWord){
+    $('#modal-content_customDeck').html('')
     event.stopPropagation();
 
-    console.log(wordId)
+    console.log(`wordId: ${wordId}, theWord: ${theWord}`)
+    $('#modal_header_h5').text(`將 ${theWord} 加入自訂字卡`)
+    globalWordIdForCustomDeck = wordId
+    //check weather this word is already in customDeck
+    db.transaction(function (tx) {
+        tx.executeSql(` SELECT 
+                        customdeck.deckId, 
+                        customdeck.deckName, 
+                        customdecklist.wordId
+                        FROM customdeck 
+                        LEFT OUTER JOIN customdecklist 
+                        ON customdeck.deckId = customdecklist.deckId AND customdecklist.wordId = ?;
+        `, [wordId], function (tx, rs) {
+            for(let i=0 ; i < rs.rows.length; i++){
+                const deckId = rs.rows.item(i).deckId
+                const deckName = rs.rows.item(i).deckName
+                const rsWordId = rs.rows.item(i).wordId
+                $('#modal-content_customDeck').append(`
+                    <div class="row modal_row_customDeckList">
+                        <div class="col s12">
+                        <label>
+                            <input type="checkbox" class="filled-in customDeckCheckBox" ${rsWordId==null?'':'checked="checked"'}/>
+                            <span class="modal_checkBox_span" data-deckid="${deckId}" data-wordid="${wordId}">${deckName}</span>
+                         </label>
+                        </div>
+                    </div> 
+                `)
+            }
+        }, function (tx, error) {
+            swal.fire('資料庫錯誤:' + error.message);
+        });
+
+    }, function (error) {
+        console.log('Transaction ERROR: ' + error.message);
+    }, function () {
+        console.log('Query database OK');
+        customDeckCheckBoxListener()
+        $('#modal1').modal('open')
+
+    });
+    ///
+    
+}
+
+const show_newCustomDeck = function(){
+    $('#modal1').modal('close')
+    let newUUID = generateUUID()
+    Swal.fire({
+        title: '新增自訂字卡堆',
+        input: 'text',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        showCancelButton: false,
+        confirmButtonText: '新增',
+        showLoaderOnConfirm: true,
+        preConfirm: (inputText) => {
+            console.log(inputText)
+            if(inputText!=''){
+            db.transaction(function (tx) {
+                 
+                tx.executeSql('INSERT INTO customdeck (deckId,deckName) VALUES (?,?)', [newUUID,inputText], function (tx, rs) {
+
+
+                    }, function (tx, error) {
+                    swal.fire('資料庫錯誤:' + error.message);
+                });
+
+            }, function (error) {
+                console.log('Transaction ERROR: ' + error.message);
+            }, function () {
+                console.log('Query database OK')
+                $('#modal-content_customDeck').append(`
+                <div class="row modal_row_customDeckList" >
+                    <div class="col s12">
+                    <label>
+                        <input type="checkbox" class="filled-in customDeckCheckBox" id="newCustomDeck"/>
+                        <span class="modal_checkBox_span" data-deckid="${newUUID}" data-wordid="${globalWordIdForCustomDeck}">${inputText}</span>
+                     </label>
+                    </div>
+                </div> 
+                `)
+                newCustomDeckListener()
+            })
+            
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '請輸入自訂卡堆名稱'
+                  })
+            }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        
+        $('#modal1').modal('open')
+
+      })
+}
+
+const newCustomDeckListener = function(){
+    $('#newCustomDeck').change(function() {
+        const spanElement = $(this).parent().find('span')
+        const wordId = spanElement.data('wordid')
+        const deckId = spanElement.data('deckid')
+
+        if ($(this).is(':checked')) {
+            doCustomDeckListBy(deckId,wordId,'add')
+        } else {
+            doCustomDeckListBy(deckId,wordId,'del')
+        }
+      });
+}
+
+const customDeckCheckBoxListener = function(){
+
+    $('.customDeckCheckBox').change(function() {
+        const spanElement = $(this).parent().find('span')
+        const wordId = spanElement.data('wordid')
+        const deckId = spanElement.data('deckid')
+
+        if ($(this).is(':checked')) {
+            doCustomDeckListBy(deckId,wordId,'add')
+        } else {
+            doCustomDeckListBy(deckId,wordId,'del')
+        }
+      });
+      
+}
+
+const doCustomDeckListBy = function(deckId,wordId,action){
+
+    if(action == 'add'){
+        db.transaction(function (tx) {
+
+            tx.executeSql('INSERT INTO customdecklist (deckId,wordId) VALUES (?,?)', [deckId, wordId], function (tx, rs) {
+                }, function (tx, error) {
+                swal.fire('資料庫錯誤:' + error.message);
+            });
+    
+        }, function (error) {
+            console.log('新增自訂卡堆失敗' + error.message);
+        }, function () {
+            console.log(`Successfully Add deckId: ${deckId}, wordId: ${wordId}`);
+            M.toast({html: '新增成功',displayLength: 800})
+        });
+    }else if (action=='del'){
+        db.transaction(function (tx) {
+
+            tx.executeSql('DELETE FROM customdecklist WHERE deckId = ? and wordId = ?', [deckId, wordId], function (tx, rs) {
+                }, function (tx, error) {
+                swal.fire('資料庫錯誤:' + error.message);
+            });
+    
+        }, function (error) {
+            console.log('移除自訂卡堆失敗' + error.message);
+        }, function () {
+            console.log(`Successfully Del deckId: ${deckId}, wordId: ${wordId}`);
+            M.toast({html: '移除成功',displayLength: 800})
+
+        });
+    }
+
+
 }

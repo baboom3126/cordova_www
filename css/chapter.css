@@ -141,3 +141,20 @@
     background-color: #5F89C7!important;
 
 }
+
+.modal_checkBox_span{
+    width: 100%;
+    color:black;
+    font-size: 1.2rem!important;
+}
+
+
+
+.modal_row_customDeckList{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.swal2-input{
+    text-align: center;
+}

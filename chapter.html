@@ -245,12 +245,27 @@
 
     <!-- Modal Structure -->
     <div id="modal1" class="modal bottom-sheet">
-        <div class="modal-content">
-            <h4>Modal Header</h4>
-            <p>A bunch of text</p>
+        <div class="modal-content container" >
+            <div class="row" id="modal_header_row">
+                <div class="s12"><h5 id="modal_header_h5" style="font-weight: bold;padding-bottom: 8px;">將 ${單字} 加入自訂字卡</h5></div>
+            </div>
+            <div id="modal-content_customDeck">
+
+            </div>
+            <!-- <div class="row modal_row_customDeckList">
+                <div class="col s12">
+                    <label>
+                        <input type="checkbox" class="filled-in" checked="checked" />
+                        <span class="modal_checkBox_span">Filled in</span>
+                      </label>
+                </div>
+            </div>  -->
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            <a class=" waves-effect waves-green btn-flat" onclick="show_newCustomDeck()">  
+                
+                <span>＋建立新的自訂卡堆</span>
+            </a>
         </div>
     </div>
 

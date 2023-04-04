@@ -154,3 +154,8 @@ footer {
     height: 56px;
     margin: 0 18px;
 }
+
+[type="checkbox"].filled-in:checked+span:not(.lever):after{
+    border-color: #5F89C7!important;
+    background-color: #5F89C7!important;
+}
