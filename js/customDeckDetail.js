@@ -1,12 +1,13 @@
 var urlKeyValue = location.href.split('?')[1]
 var splitUrlKeyValue = urlKeyValue.split('&')
-var thisChapter = {}
+var thisCustomDeck = {}
 let globalWordIdForCustomDeck
 
 for (var i in splitUrlKeyValue) {
     var tempURL = splitUrlKeyValue[i].split('=')
-    thisChapter[tempURL[0]] = tempURL[1]
+    thisCustomDeck[tempURL[0]] = tempURL[1]
 }
+
 var db = null
 var filterDeck;
 var wordListArray = []
@@ -63,16 +64,15 @@ $(document).ready(function () {
         // });
 
 
-        $('#div_chapterName').html('' + decodeURIComponent(thisChapter.chapterName))
+        $('#div_chapterName').html('' + decodeURIComponent(thisCustomDeck.deckName))
 
         //localstorage textbookContentChapterDeck is deprecated
         //var textbookContentChapterDeck = JSON.parse(localStorage.getItem('textbookContentChapterDeck'))
         //var textbookContentChapterDeck = await getTccdArray()
 
 
-//thisChapter.chapterId
 
-        filterDeck = tccdRsToArray(await getTccdByChapters([thisChapter.chapterId]))
+        filterDeck = tccdRsToArrayForCustomDeck(await getTccdByCustomDeckId(thisCustomDeck.deckId))
         showWordList(filterDeck)
         
 
@@ -84,6 +84,40 @@ $(document).ready(function () {
         
     })
 })
+
+const tccdRsToArrayForCustomDeck = function (rs){
+    let temp = []
+    for(let i=0 ; i< rs.length; i++){
+        temp.push(
+            {
+                deckId:rs.item(i).deckId,
+                WordId:rs.item(i).wordId
+            })
+    }
+    return temp
+}
+
+const getTccdByCustomDeckId = function(deckId){
+
+    return new Promise((resolve,reject)=>{
+        db.transaction(function (tx) {
+            tx.executeSql(`SELECT * FROM customdecklist WHERE deckId=?`, [deckId], function (tx, rs) {
+                resolve(rs.rows)
+            }, function (tx, error) {
+                reject(error)
+                swal.fire('資料庫錯誤: ' + error.message);
+            });
+        }, function (error) {
+            swal.fire('資料庫錯誤: ' + error.message);
+            console.log('Transaction ERROR: ' + error.message);
+        }, function () {
+            // console.log('Query database OK');
+
+        });
+    })
+}
+
+
 
 var showWordList = function (data) {
     const showChinese = localStorage.getItem('showChinese')
@@ -100,8 +134,8 @@ var showWordList = function (data) {
                                 </div>
 
                             </div>
-                            <div class="col s2" onclick="javascript:showCustomDeckListInModal(event,'${i.WordId}','${rs.rows.item(0).TheWord}')">
-                                    <i class="material-icons" style="vertical-align: middle;">add</i>
+                            <div class="col s2" onclick="javascript:del_wordInCustomDeckListBy(event,'${i.WordId}','${rs.rows.item(0).TheWord}')">
+                                    <i class="material-icons" style="vertical-align: middle;">remove</i>
                             </div>
                         </div>`
                 $('#div_word_list').append(appendHtml)
@@ -119,17 +153,6 @@ var showWordList = function (data) {
 
     });
 
-    // var wordIdAndNamepair = {}
-    // var wordJSON = JSON.parse(localStorage.getItem('word'))
-    // for (let i of data) {
-    //     wordJSON.find(element => {
-    //         if (element.WordId == i.WordId) {
-    //             wordIdAndNamepair[i.WordId] = element.TheWord
-    //         }
-    //     })
-    // }
-    // console.log(wordIdAndNamepair)
-    // var appendHtml = ``
 
 }
 
@@ -313,174 +336,124 @@ var replay_audio = function (word_audioPath, word) {
 
 }
 
-
-const showCustomDeckListInModal = function(event,wordId,theWord){
-    $('#modal-content_customDeck').html('')
-    event.stopPropagation();
-
-    console.log(`wordId: ${wordId}, theWord: ${theWord}`)
-    $('#modal_header_h5').text(`將 ${theWord} 加入自訂字卡`)
-    globalWordIdForCustomDeck = wordId
-    //check weather this word is already in customDeck
-    db.transaction(function (tx) {
-        tx.executeSql(` SELECT 
-                        customdeck.deckId, 
-                        customdeck.deckName, 
-                        customdecklist.wordId
-                        FROM customdeck 
-                        LEFT OUTER JOIN customdecklist 
-                        ON customdeck.deckId = customdecklist.deckId AND customdecklist.wordId = ?;
-        `, [wordId], function (tx, rs) {
-            for(let i=0 ; i < rs.rows.length; i++){
-                const deckId = rs.rows.item(i).deckId
-                const deckName = rs.rows.item(i).deckName
-                const rsWordId = rs.rows.item(i).wordId
-                $('#modal-content_customDeck').append(`
-                    <div class="row modal_row_customDeckList">
-                        <div class="col s12">
-                        <label>
-                            <input type="checkbox" class="filled-in customDeckCheckBox" ${rsWordId==null?'':'checked="checked"'}/>
-                            <span class="modal_checkBox_span" data-deckid="${deckId}" data-wordid="${wordId}">${deckName}</span>
-                         </label>
-                        </div>
-                    </div> 
-                `)
-            }
-        }, function (tx, error) {
-            swal.fire('請回到首頁點選右上角重新更新資料');
-        });
-
-    }, function (error) {
-        console.log('Transaction ERROR: ' + error.message);
-    }, function () {
-        console.log('Query database OK');
-        customDeckCheckBoxListener()
-        $('#modal1').modal('open')
-
-    });
-    ///
-    
-}
-
-const show_newCustomDeck = function(){
-    $('#modal1').modal('close')
-    let newUUID = generateUUID()
+const del_wordInCustomDeckListBy = function(event,id,name){
+    event.stopPropagation()
     Swal.fire({
-        title: '新增自訂字卡堆',
-        input: 'text',
-        inputAttributes: {
-          autocapitalize: 'off'
-        },
-        showCancelButton: false,
-        confirmButtonText: '新增',
-        showLoaderOnConfirm: true,
-        preConfirm: (inputText) => {
-            console.log(inputText)
-            if(inputText!=''){
+        title: '確定刪除?',
+        text: name,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '確認'
+      }).then((result) => {
+        if (result.isConfirmed) {
             db.transaction(function (tx) {
                  
-                tx.executeSql('INSERT INTO customdeck (deckId,deckName) VALUES (?,?)', [newUUID,inputText], function (tx, rs) {
-
-
-                    }, function (tx, error) {
-                    swal.fire('資料庫錯誤:' + error.message);
-                });
+                tx.executeSql('DELETE FROM customdecklist WHERE wordId = ?', [id], function (tx, rs) {
+                    
+                }, function (tx, error) {
+                swal.fire('資料庫錯誤:' + error.message);
+            });
 
             }, function (error) {
                 console.log('Transaction ERROR: ' + error.message);
             }, function () {
-                console.log('Query database OK')
-                $('#modal-content_customDeck').append(`
-                <div class="row modal_row_customDeckList" >
-                    <div class="col s12">
-                    <label>
-                        <input type="checkbox" class="filled-in customDeckCheckBox" id="newCustomDeck"/>
-                        <span class="modal_checkBox_span" data-deckid="${newUUID}" data-wordid="${globalWordIdForCustomDeck}">${inputText}</span>
-                     </label>
-                    </div>
-                </div> 
-                `)
-                newCustomDeckListener()
-            })
-            
-            }else{
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: '請輸入自訂卡堆名稱'
+                Swal.fire(
+                    '已刪除!',
+                    `單字: ${name} `,
+                    'success'
+                  ).then(()=>{
+                      window.location.reload()
                   })
-            }
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-      }).then((result) => {
-        
-        $('#modal1').modal('open')
+            })
 
+
+        }
       })
 }
 
-const newCustomDeckListener = function(){
-    $('#newCustomDeck').change(function() {
-        const spanElement = $(this).parent().find('span')
-        const wordId = spanElement.data('wordid')
-        const deckId = spanElement.data('deckid')
-
-        if ($(this).is(':checked')) {
-            doCustomDeckListBy(deckId,wordId,'add')
-        } else {
-            doCustomDeckListBy(deckId,wordId,'del')
-        }
-      });
-}
-
-const customDeckCheckBoxListener = function(){
-
-    $('.customDeckCheckBox').change(function() {
-        const spanElement = $(this).parent().find('span')
-        const wordId = spanElement.data('wordid')
-        const deckId = spanElement.data('deckid')
-
-        if ($(this).is(':checked')) {
-            doCustomDeckListBy(deckId,wordId,'add')
-        } else {
-            doCustomDeckListBy(deckId,wordId,'del')
-        }
-      });
-      
-}
-
-const doCustomDeckListBy = function(deckId,wordId,action){
-
-    if(action == 'add'){
+const queryWordAndShowModal = function(){
+    const theWord = $('#input_queryWord').val()
+    if(theWord==''){
+        swal.fire('請輸入要查詢的單字')
+    }else{
+        $('#table_allQueryResult').html(``)
+        console.log(theWord)
         db.transaction(function (tx) {
+                 
+            tx.executeSql(`SELECT * FROM word JOIN worddef ON word.WordId = worddef.WordId WHERE word.TheWord = ?`, [theWord], function (tx, rs) {
+                const result = rs.rows
+                console.log(result)
+                let temp = {}
+                for(let i =0 ;i<result.length;i++){
+                    if(temp[result.item(i).WordId]==undefined){
+                        temp[result.item(i).WordId] = result.item(i).ChiDefinition
+                    }else{
+                        temp[result.item(i).WordId] +='; ' + result.item(i).ChiDefinition
+                    }
+                }
+                for (const key in temp) {
+                    const value = temp[key];
+                    $('#table_allQueryResult').append(`
+                        <tr onclick="javscript:addToCustomDeck('${key}')">
+                            <td>${theWord}</td>
+                            <td class="breakWord">${value}</td>
+                        </tr> 
+                    `)
 
-            tx.executeSql('INSERT INTO customdecklist (deckId,wordId) VALUES (?,?)', [deckId, wordId], function (tx, rs) {
+                }
+
+                console.log(temp)
                 }, function (tx, error) {
                 swal.fire('資料庫錯誤:' + error.message);
             });
-    
-        }, function (error) {
-            console.log('新增自訂卡堆失敗' + error.message);
-        }, function () {
-            console.log(`Successfully Add deckId: ${deckId}, wordId: ${wordId}`);
-            M.toast({html: '新增成功',displayLength: 800})
-        });
-    }else if (action=='del'){
-        db.transaction(function (tx) {
 
-            tx.executeSql('DELETE FROM customdecklist WHERE deckId = ? and wordId = ?', [deckId, wordId], function (tx, rs) {
-                }, function (tx, error) {
-                swal.fire('資料庫錯誤:' + error.message);
-            });
-    
-        }, function (error) {
-            console.log('移除自訂卡堆失敗' + error.message);
-        }, function () {
-            console.log(`Successfully Del deckId: ${deckId}, wordId: ${wordId}`);
-            M.toast({html: '移除成功',displayLength: 800})
 
-        });
+        }, function (error) {
+            console.log('Transaction ERROR: ' + error.message);
+        }, function () {
+            $('#modal-title').text(`單字 ${theWord} 查詢結果`)
+            $('#modal1').modal('open')
+        })
+
     }
 
+}
+
+
+const addToCustomDeck = function(wordId){
+
+    Swal.fire({
+        title: '新增單字',
+        text: '',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '確認'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            db.transaction(function (tx) {
+                tx.executeSql('INSERT INTO customdecklist (deckId,wordId) VALUES (?,?)', [thisCustomDeck.deckId, wordId], function (tx, rs) {
+                    }, function (tx, error) {
+                    swal.fire('資料庫錯誤:' + error.message);
+                });
+        
+            }, function (error) {
+                console.log('新增自訂卡堆失敗' + error.message);
+            }, function () {
+                Swal.fire(
+                    '成功',
+                    '',
+                    'success'
+                  ).then(()=>{
+                      window.location.reload()
+                  })            
+                });
+
+
+        }
+      })
 
 }

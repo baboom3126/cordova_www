@@ -159,3 +159,8 @@ footer {
     border-color: #5F89C7!important;
     background-color: #5F89C7!important;
 }
+
+.breakWord{
+    word-break: break-all;
+}
+
