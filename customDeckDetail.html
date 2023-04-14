@@ -146,10 +146,10 @@
     </div>
 
     <div class="row container">
-        <form class="col s12">
+        <div class="col s12">
           <div class="row">
             <div class="input-field col s10">
-              <input id="input_queryWord" type="text" class="validate">
+              <input id="input_queryWord" type="text" class="validate" onkeydown="if (event.keyCode === 13) queryWordAndShowModal()">
               <label for="input_queryWord">新增單字</label>
             </div>
             <div class="input-field col s2 btn-flat" style="background-color: #5F89C7;width: auto;color:white;" onclick="javascript:queryWordAndShowModal()">
@@ -157,7 +157,7 @@
               </div>
           </div>
 
-        </form>
+        </div>
       </div>
 
 

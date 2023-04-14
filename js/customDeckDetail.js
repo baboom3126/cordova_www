@@ -376,13 +376,14 @@ const del_wordInCustomDeckListBy = function(event,id,name){
 const queryWordAndShowModal = function(){
     const theWord = $('#input_queryWord').val()
     if(theWord==''){
-        swal.fire('請輸入要查詢的單字')
+        setTimeout(()=>swal.fire('請輸入要查詢的單字'),10)
+        
     }else{
         $('#table_allQueryResult').html(``)
         console.log(theWord)
         db.transaction(function (tx) {
                  
-            tx.executeSql(`SELECT * FROM word JOIN worddef ON word.WordId = worddef.WordId WHERE word.TheWord = ?`, [theWord], function (tx, rs) {
+            tx.executeSql(`SELECT * FROM word JOIN worddef ON word.WordId = worddef.WordId WHERE LOWER(word.TheWord) = LOWER(?)`, [theWord], function (tx, rs) {
                 const result = rs.rows
                 console.log(result)
                 let temp = {}
