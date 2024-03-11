@@ -48,7 +48,7 @@ $(document).ready(function () {
             $.ajax(settings).done(function (response, status) {
                 if (response.code != 500) {
                     let serverVersion = response.version
-                    let localVersion = JSON.parse(localStorage.getItem('version')).version
+                    let localVersion = JSON.parse(localStorage.getItem('version'))[0]
                     if (serverVersion != localVersion) {
 
                         Swal.fire({
@@ -108,12 +108,21 @@ var downloadAllData = function () {
         if (code != 200) {
             swal.fire('伺服器維修中')
         } else {
-
-            localStorage.setItem("class", JSON.stringify(response.data["class"]))
-            localStorage.setItem("classTextbook", JSON.stringify(response.data["classTextbook"]))
-            localStorage.setItem("textbook", JSON.stringify(response.data["textbook"]))
-            localStorage.setItem("textbookContent", JSON.stringify(response.data["textbookContent"]))
-            localStorage.setItem("textbookContentChapter", JSON.stringify(response.data["textbookContentChapter"]))
+            let classes = response.data.class.map(([ClassId, ClassName, ClassDescription]) => ({ClassId, ClassName, ClassDescription}))
+            let classTextbook = response.data.classTextbook.map(([ClassTextbookId, ClassId, TextbookId]) => ({ClassTextbookId, ClassId, TextbookId}))
+            let textbook = response.data.textbook.map(([TextbookId, TextbookName, TextbookDescription]) => ({TextbookId, TextbookName, TextbookDescription}))
+            let textbookContent = response.data.textbookContent.map(([TextbookId, TextbookContentId, TextbookContentName]) => ({TextbookId, TextbookContentId, TextbookContentName}))
+            let textbookContentChapter = response.data.textbookContentChapter.map(([TextbookContentId, TextbookContentName, TextbookContentChapterId, TextbookContentChapterName, Classify]) => ({TextbookContentId, TextbookContentName, TextbookContentChapterId, TextbookContentChapterName, Classify}))
+            let textbookContentChapterDeck = response.data.textbookContentChapterDeck.map(([TextbookContentChapterId, WordId]) => ({TextbookContentChapterId, WordId}))
+            let words = response.data.word.map(([WordId, AudioPath, Remarks , Status , TheWord]) => ({WordId, AudioPath, Remarks , Status , TheWord}))
+            let worddefs = response.data.worddef.map(([WordDefId, ChiDefinition, Myorder, Status, WordId, Speech]) => ({WordDefId, ChiDefinition, Myorder, Status, WordId, Speech}))
+            let wordsens = response.data.wordsen.map(([WordSenId, WordDefId, ChiSentence, EngSentence, Myorder, Status]) => ({WordSenId, WordDefId, ChiSentence, EngSentence, Myorder, Status}))
+         
+            localStorage.setItem("class", JSON.stringify(classes))
+            localStorage.setItem("classTextbook", JSON.stringify(classTextbook))
+            localStorage.setItem("textbook", JSON.stringify(textbook))
+            localStorage.setItem("textbookContent", JSON.stringify(textbookContent))
+            localStorage.setItem("textbookContentChapter", JSON.stringify(textbookContentChapter))
             localStorage.setItem("textbookContentChapterDeck", "")
             localStorage.setItem("version", JSON.stringify(response.data["version"]))
 
@@ -132,22 +141,22 @@ var downloadAllData = function () {
                 tx.executeSql('CREATE TABLE IF NOT EXISTS customdeck (deckId, deckName)');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS customdecklist (deckId,wordId)');
 
-                for (let word of response.data["word"]) {
+                for (let word of words) {
                     tx.executeSql('INSERT INTO word (WordId, TheWord,Status,Remarks,AudioPath) VALUES (?,?,?,?,?)',
                         [word.WordId, word.TheWord,word.Status,word.Remarks,decodeURIComponent(word.AudioPath)]);
 
                 }
-                for (let worddef of response.data["worddef"]) {
+                for (let worddef of worddefs) {
                     tx.executeSql('INSERT INTO worddef (WordDefId, WordId,ChiDefinition,Speech,Myorder,Status) VALUES (?,?,?,?,?,?)',
                         [worddef.WordDefId,worddef.WordId,worddef.ChiDefinition,worddef.Speech,worddef.Myorder,worddef.Status]);
 
                 }
-                for (let wordsen of response.data["wordsen"]) {
+                for (let wordsen of wordsens) {
                     tx.executeSql('INSERT INTO wordsen (WordSenId, WordDefId,ChiSentence,EngSentence,Myorder,Status) VALUES (?,?,?,?,?,?)',
                         [wordsen.WordSenId,wordsen.WordDefId,wordsen.ChiSentence,wordsen.EngSentence,wordsen.Myorder,wordsen.Status]);
 
                 }
-                for (let tccd of response.data["textbookContentChapterDeck"]){
+                for (let tccd of textbookContentChapterDeck){
                     tx.executeSql('INSERT INTO textbookContentChapterDeck (TextbookContentChapterId,WordId) VALUES (?,?)',
                         [tccd.TextbookContentChapterId,tccd.WordId]);
                 }
